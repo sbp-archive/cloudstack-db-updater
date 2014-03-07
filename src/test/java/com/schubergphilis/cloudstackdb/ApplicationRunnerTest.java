@@ -1,6 +1,8 @@
-package com.schubergphilis.cloudstack;
+package com.schubergphilis.cloudstackdb;
 
 import org.junit.Test;
+
+import com.schubergphilis.cloudstackdb.ApplicationRunner;
 
 public class ApplicationRunnerTest {
 

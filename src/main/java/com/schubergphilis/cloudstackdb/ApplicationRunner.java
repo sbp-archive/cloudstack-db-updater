@@ -1,4 +1,4 @@
-package com.schubergphilis.cloudstack;
+package com.schubergphilis.cloudstackdb;
 
 public class ApplicationRunner {
 
