@@ -1,58 +1,168 @@
 package com.schubergphilis.cloudstackdb;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import com.schubergphilis.utils.FileUtils;
 
 public class FileSystemConflictDetectorTest {
 
-    private File fileV1;
-    private File fileV2;
+    @Rule
+    public TemporaryFolder rootFolderCurrentVersion = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder rootFolderNewVersion = new TemporaryFolder();
+
+    private SourceCodeVersion currentVersion;
+    private SourceCodeVersion newVersion;
+
+    private final String filename = "file";
+    private File fileCurrentVersion;
+    private File fileNewVersion;
 
     @Before
     public void setup() throws Exception {
-        fileV1 = File.createTempFile("fileV1", Long.toString(System.currentTimeMillis()));
-        fileV2 = File.createTempFile("fileV2", Long.toString(System.currentTimeMillis()));
+        currentVersion = new SourceCodeVersion(rootFolderCurrentVersion.getRoot());
+        newVersion = new SourceCodeVersion(rootFolderNewVersion.getRoot());
+
+        fileCurrentVersion = rootFolderCurrentVersion.newFile(filename);
+        currentVersion.addFiles(Arrays.asList(new File[] {fileCurrentVersion}));
+
+        fileNewVersion = rootFolderNewVersion.newFile(filename);
+        newVersion.addFiles(Arrays.asList(new File[] {fileNewVersion}));
     }
 
     @Test
-    public void testContentHasChangedWhenOneLineHasChanged() throws Exception {
-        FileWriter fileV1Writer = new FileWriter(fileV1);
-        fileV1Writer.write("foo");
-        fileV1Writer.close();
+    public void testCheckForMissingFilesWhenNoFileIsMissing() throws Exception {
+        Set<String> filesInPreviousVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
+        Set<String> filesInCurrentVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
 
-        FileWriter fileV2Writer = new FileWriter(fileV2);
-        fileV2Writer.write("boo");
-        fileV2Writer.close();
+        List<Conflict> conflicts = FileSystemConflictDetector.checkForMissingFiles(filesInPreviousVersion, filesInCurrentVersion);
 
-        assertTrue(FileSystemConflictDetector.contentHasChanged(fileV1, fileV2));
+        assertNotNull(conflicts);
+        assertEquals(0, conflicts.size());
     }
 
     @Test
-    public void testContentHasChangedWhenOneLineWasRemoved() throws Exception {
-        FileWriter fileV1Writer = new FileWriter(fileV1);
-        fileV1Writer.write("foo");
-        fileV1Writer.close();
+    public void testCheckForMissingFilesWhenOneFileIsMissing() throws Exception {
+        Set<String> filesInPreviousVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
+        Set<String> filesInCurrentVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b"}));
 
-        assertTrue(FileSystemConflictDetector.contentHasChanged(fileV1, fileV2));
+        List<Conflict> conflicts = FileSystemConflictDetector.checkForMissingFiles(filesInPreviousVersion, filesInCurrentVersion);
+
+        assertNotNull(conflicts);
+        assertEquals(1, conflicts.size());
+        assertThat(conflicts.get(0).print(), containsString("- c"));
     }
 
     @Test
-    public void testContentHasChangedWhenFormattingChanged() throws Exception {
-        FileWriter fileV1Writer = new FileWriter(fileV1);
-        fileV1Writer.write("foo");
-        fileV1Writer.close();
+    public void testCheckForMissingFilesWhenallFilesAreMissing() throws Exception {
+        Set<String> filesInPreviousVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
+        Set<String> filesInCurrentVersion = new HashSet<>(Arrays.asList(new String[] {}));
 
-        FileWriter fileV2Writer = new FileWriter(fileV2);
-        fileV2Writer.write("\tfoo  \t\n\n\n");
-        fileV2Writer.close();
+        List<Conflict> conflicts = FileSystemConflictDetector.checkForMissingFiles(filesInPreviousVersion, filesInCurrentVersion);
 
-        assertFalse(FileSystemConflictDetector.contentHasChanged(fileV1, fileV2));
+        assertNotNull(conflicts);
+        assertEquals(1, conflicts.size());
+        assertThat(conflicts.get(0).print(), allOf(containsString("- a"), containsString("- b"), containsString("- a")));
     }
 
+    @Test
+    public void testCheckForChangesInFileContentsWhenNoFileHasChanged() throws Exception {
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("foo", fileNewVersion);
+
+        List<Conflict> conflicts = FileSystemConflictDetector.checkForChangesInFileContents(currentVersion, newVersion);
+
+        assertNotNull(conflicts);
+        assertEquals(0, conflicts.size());
+    }
+
+    @Test
+    public void testCheckForChangesInFileContentsWhenOneFileHasChanged() throws Exception {
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("bar", fileNewVersion);
+        String otherFilename = "otherFile";
+        File otherFileCurrentVersion = rootFolderCurrentVersion.newFile(otherFilename);
+        File otherFileNewVersion = rootFolderNewVersion.newFile(otherFilename);
+        FileUtils.writeToFile("foobar", otherFileCurrentVersion);
+        FileUtils.writeToFile("foobar", otherFileNewVersion);
+        currentVersion.addFiles(Arrays.asList(new File[] {otherFileCurrentVersion}));
+        newVersion.addFiles(Arrays.asList(new File[] {otherFileNewVersion}));
+
+        List<Conflict> conflicts = FileSystemConflictDetector.checkForChangesInFileContents(currentVersion, newVersion);
+
+        assertNotNull(conflicts);
+        assertEquals(1, conflicts.size());
+        assertThat(conflicts.get(0).print(), containsString(filename));
+    }
+
+    @Test
+    public void testDetectWhenThereAreNoConflicts() throws Exception {
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("foo", fileNewVersion);
+        FileSystemConflictDetector fileSystemConflictDetector = new FileSystemConflictDetector(currentVersion, newVersion);
+
+        List<Conflict> conflicts = fileSystemConflictDetector.detect();
+
+        assertNotNull(conflicts);
+        assertEquals(0, conflicts.size());
+    }
+
+    @Test
+    public void testDetectWhenOneFileWasRemoved() throws Exception {
+        newVersion.getFiles().remove("/" + filename);
+        FileSystemConflictDetector fileSystemConflictDetector = new FileSystemConflictDetector(currentVersion, newVersion);
+
+        List<Conflict> conflicts = fileSystemConflictDetector.detect();
+
+        assertNotNull(conflicts);
+        assertEquals(1, conflicts.size());
+        assertThat(conflicts.get(0), instanceOf(MissingFilesConflict.class));
+    }
+
+    @Test
+    public void testDetectWhenOneFileChanged() throws Exception {
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("bar", fileNewVersion);
+        FileSystemConflictDetector fileSystemConflictDetector = new FileSystemConflictDetector(currentVersion, newVersion);
+
+        List<Conflict> conflicts = fileSystemConflictDetector.detect();
+
+        assertNotNull(conflicts);
+        assertEquals(1, conflicts.size());
+        assertThat(conflicts.get(0), instanceOf(FileContentHasChangedConflict.class));
+    }
+
+    @Test
+    public void testDetectWhenOneFileChangedAndAnotherIsMissing() throws Exception {
+        String otherFilename = "otherFile";
+        File otherFileCurrentVersion = rootFolderCurrentVersion.newFile(otherFilename);
+        currentVersion.addFiles(Arrays.asList(new File[] {otherFileCurrentVersion}));
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("bar", fileNewVersion);
+        FileSystemConflictDetector fileSystemConflictDetector = new FileSystemConflictDetector(currentVersion, newVersion);
+
+        List<Conflict> conflicts = fileSystemConflictDetector.detect();
+
+        assertNotNull(conflicts);
+        assertEquals(2, conflicts.size());
+        assertThat(conflicts.get(0), anyOf(instanceOf(MissingFilesConflict.class), instanceOf(FileContentHasChangedConflict.class)));
+        assertThat(conflicts.get(1), anyOf(instanceOf(MissingFilesConflict.class), instanceOf(FileContentHasChangedConflict.class)));
+    }
 }

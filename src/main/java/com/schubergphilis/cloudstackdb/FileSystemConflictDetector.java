@@ -1,47 +1,51 @@
 package com.schubergphilis.cloudstackdb;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.schubergphilis.utils.FileUtils;
+import java.util.Set;
 
 public class FileSystemConflictDetector implements ConflictDetector {
 
-    private final List<File> previousVersion = new LinkedList<File>();
-    private final List<File> currentVersion = new LinkedList<File>();
+    private final SourceCodeVersion currentVersion;
+    private final SourceCodeVersion newVersion;
+
+    public FileSystemConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion newVersion) {
+        this.currentVersion = currentVersion;
+        this.newVersion = newVersion;
+    }
 
     @Override
     public List<Conflict> detect() {
-        return null;
+        List<Conflict> conflicts = new LinkedList<>();
+
+        conflicts.addAll(checkForMissingFiles(currentVersion.getFilenames(), newVersion.getFilenames()));
+
+        conflicts.addAll(checkForChangesInFileContents(currentVersion, newVersion));
+
+        return conflicts;
     }
 
-    public void addToPreviousVersion(Collection<? extends String> filenames) {
-        addFilesToList(previousVersion, filenames);
-    }
+    protected static List<Conflict> checkForChangesInFileContents(SourceCodeVersion currentVersion, SourceCodeVersion newVersion) {
+        List<Conflict> conflicts = new LinkedList<>();
 
-    public void addToCurrentVersion(Collection<? extends String> filenames) {
-        addFilesToList(currentVersion, filenames);
-    }
-
-    private static void addFilesToList(List<File> list, Collection<? extends String> filenames) {
-        for (String filename : filenames) {
-            list.add(new File(filename));
+        List<String> filesThatChangedInNewVersion = currentVersion.getFilesThatChangedInNewVersion(newVersion);
+        if (!filesThatChangedInNewVersion.isEmpty()) {
+            conflicts.add(new FileContentHasChangedConflict(filesThatChangedInNewVersion));
         }
+
+        return conflicts;
     }
 
-    public static boolean contentHasChanged(File fileV1, File fileV2) throws IOException {
-        boolean removeTraillingWhiteSpace = true;
-        List<String> linesFileV1 = FileUtils.readLines(fileV1, removeTraillingWhiteSpace);
-        List<String> linesFileV2 = FileUtils.readLines(fileV2, removeTraillingWhiteSpace);
-
-        if (linesFileV1.size() != linesFileV2.size()) {
-            return removeTraillingWhiteSpace;
-        } else {
-            return !linesFileV1.equals(linesFileV2);
+    protected static List<Conflict> checkForMissingFiles(Set<String> filesInCurrentVersion, Set<String> filesInNewVersion) {
+        List<Conflict> conflicts = new LinkedList<>();
+        if (newVersionDoesNotHaveAllFilesFromCurrent(filesInCurrentVersion, filesInNewVersion)) {
+            conflicts.add(new MissingFilesConflict(filesInCurrentVersion, filesInNewVersion));
         }
+        return conflicts;
+    }
+
+    private static boolean newVersionDoesNotHaveAllFilesFromCurrent(Set<String> filesInCurrentVersion, Set<String> filesInNewVersion) {
+        return !filesInNewVersion.containsAll(filesInCurrentVersion);
     }
 
 }
