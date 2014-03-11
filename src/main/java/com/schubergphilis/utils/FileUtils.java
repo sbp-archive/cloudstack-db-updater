@@ -5,6 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.hamcrest.Matcher;
+
+import com.schubergphilis.cloudstackdb.FileComparator;
 
 public final class FileUtils {
 
@@ -55,6 +61,20 @@ public final class FileUtils {
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(contents);
         fileWriter.close();
+    }
+
+    public static Set<File> gatherFilesThatMatchCriteria(File baseDir, Matcher<String> criteria) {
+        Set<File> gatheredFiles = new TreeSet<>(new FileComparator());
+
+        for (File file : baseDir.listFiles()) {
+            if (file.isDirectory()) {
+                gatheredFiles.addAll(gatherFilesThatMatchCriteria(file, criteria));
+            } else if (criteria.matches(file.getPath())) {
+                gatheredFiles.add(file);
+            }
+        }
+
+        return gatheredFiles;
     }
 
 }

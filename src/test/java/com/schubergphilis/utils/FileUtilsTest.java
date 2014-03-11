@@ -1,20 +1,32 @@
 package com.schubergphilis.utils;
 
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.List;
+import java.util.Set;
 
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class FileUtilsTest {
+
+    @Rule
+    public TemporaryFolder rootFolder = new TemporaryFolder();
 
     private File file1;
     private File file2;
@@ -119,4 +131,49 @@ public class FileUtilsTest {
         assertTrue(temporaryFile.isFile());
     }
 
+    @Test
+    public void testGatherFilesThatMatchCriteriaWhenBaseDirIsEmpty() throws Exception {
+        Set<File> gatheredFiles = FileUtils.gatherFilesThatMatchCriteria(rootFolder.getRoot(), containsString("somename"));
+
+        assertNotNull(gatheredFiles);
+        assertEquals(0, gatheredFiles.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGatherFilesThatMatchCriteriaWhenBaseDirOnlyHasFiles() throws Exception {
+        String someName = "somename";
+        String otherName = "othername";
+        String yetAnotherName = "yetanothername";
+        rootFolder.newFile(someName);
+        rootFolder.newFile(otherName);
+        rootFolder.newFile(yetAnotherName);
+
+        Set<File> gatheredFiles = FileUtils.gatherFilesThatMatchCriteria(rootFolder.getRoot(), anyOf(containsString(someName), containsString("yet")));
+
+        assertNotNull(gatheredFiles);
+        assertEquals(2, gatheredFiles.size());
+        assertThat(gatheredFiles, IsIterableContainingInAnyOrder.<File> containsInAnyOrder(hasProperty("name", is(someName)), hasProperty("name", is(yetAnotherName))));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGatherFilesThatMatchCriteriaWhenBaseDirHasFilesAndDirs() throws Exception {
+        String someName = "somename";
+        String otherName = "othername";
+        String yetAnotherName = "yetanothername";
+        File folderA = rootFolder.newFolder("a");
+        File folderB = rootFolder.newFolder("a/b");
+        File folderC = rootFolder.newFolder("c");
+
+        new File(folderA, someName).createNewFile();
+        new File(folderB, otherName).createNewFile();
+        new File(folderC, yetAnotherName).createNewFile();
+
+        Set<File> gatheredFiles = FileUtils.gatherFilesThatMatchCriteria(rootFolder.getRoot(), anyOf(containsString(someName), containsString("yet")));
+
+        assertNotNull(gatheredFiles);
+        assertEquals(2, gatheredFiles.size());
+        assertThat(gatheredFiles, IsIterableContainingInAnyOrder.<File> containsInAnyOrder(hasProperty("name", is(someName)), hasProperty("name", is(yetAnotherName))));
+    }
 }

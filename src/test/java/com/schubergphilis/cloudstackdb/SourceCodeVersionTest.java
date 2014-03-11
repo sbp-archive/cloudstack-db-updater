@@ -66,7 +66,7 @@ public class SourceCodeVersionTest {
         String fileAbsolutePath = "some/path/to/file";
         String baseDirAbsolutePath = "some/path/";
 
-        assertTrue(SourceCodeVersion.fileDoesNotBelongToSourceCode(fileAbsolutePath, baseDirAbsolutePath));
+        assertFalse(SourceCodeVersion.fileDoesNotBelongToSourceCode(fileAbsolutePath, baseDirAbsolutePath));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class SourceCodeVersionTest {
         String fileAbsolutePath = "some/path/to/file";
         String baseDirAbsolutePath = "root/some/path/";
 
-        assertFalse(SourceCodeVersion.fileDoesNotBelongToSourceCode(fileAbsolutePath, baseDirAbsolutePath));
+        assertTrue(SourceCodeVersion.fileDoesNotBelongToSourceCode(fileAbsolutePath, baseDirAbsolutePath));
     }
 
     @Test
