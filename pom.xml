@@ -17,7 +17,7 @@
     <integration.tests.report>${coverage.reports.dir}/jacoco-it.exec</integration.tests.report>
     <!-- sonar properties -->
     <sonar.language>java</sonar.language>
-    <sonar.analysis.mode>incremental</sonar.analysis.mode>
+    <sonar.analysis.mode>analysis</sonar.analysis.mode>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.jacoco.reportPath>${unit.tests.report}</sonar.jacoco.reportPath>
