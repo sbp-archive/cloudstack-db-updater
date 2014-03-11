@@ -10,8 +10,6 @@ import java.util.TreeSet;
 
 import org.hamcrest.Matcher;
 
-import com.schubergphilis.cloudstackdb.FileComparator;
-
 public final class FileUtils {
 
     private FileUtils() {
