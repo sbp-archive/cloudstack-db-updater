@@ -1,53 +1,60 @@
 package com.schubergphilis.cloudstackdb;
 
-import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
 public class MissingFilesConflictTest {
 
     @Test
-    public void testConstructorWhenSetsAreEmpty() throws Exception {
-        Set<String> filesInPreviousVersion = new HashSet<>();
-        Set<String> filesInCurrentVersion = new HashSet<>();
+    public void testConstructorWhenFilesAreSorted() throws Exception {
+        List<String> missingFiles = Arrays.asList(new String[] {"a", "b", "c"});
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(filesInPreviousVersion, filesInCurrentVersion);
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
+        List<String> expected = missingFiles;
+        List<String> actual = missingFilesConflict.getMissingFiles();
 
-        List<String> missingFiles = missingFilesConflict.getMissingFiles();
-        assertNotNull(missingFiles);
-        assertEquals(0, missingFiles.size());
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testConstructorWhenNofileIsMissing() throws Exception {
-        Set<String> filesInPreviousVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
-        Set<String> filesInCurrentVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
+    public void testConstructorWhenFilesAreSortedInReverseOrder() throws Exception {
+        List<String> missingFiles = Arrays.asList(new String[] {"c", "b", "a"});
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(filesInPreviousVersion, filesInCurrentVersion);
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
+        List<String> expected = Arrays.asList(new String[] {"a", "b", "c"});
+        List<String> actual = missingFilesConflict.getMissingFiles();
 
-        List<String> missingFiles = missingFilesConflict.getMissingFiles();
-        assertNotNull(missingFiles);
-        assertEquals(0, missingFiles.size());
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testConstructorWhenSomefileAreMissing() throws Exception {
-        Set<String> filesInPreviousVersion = new HashSet<>(Arrays.asList(new String[] {"a", "b", "c"}));
-        Set<String> filesInCurrentVersion = new HashSet<>(Arrays.asList(new String[] {"c"}));
+    public void testConstructorWhenFilesAreInRandomOrder() throws Exception {
+        List<String> missingFiles = Arrays.asList(new String[] {"c", "a", "d", "b"});
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(filesInPreviousVersion, filesInCurrentVersion);
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
+        List<String> expected = Arrays.asList(new String[] {"a", "b", "c", "d"});
+        List<String> actual = missingFilesConflict.getMissingFiles();
 
-        List<String> missingFiles = missingFilesConflict.getMissingFiles();
-        assertNotNull(missingFiles);
-        assertEquals(2, missingFiles.size());
-        assertThat(missingFiles, hasItems(new String[] {"a", "b"}));
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testConstructorWhenThereAreNoFiles() throws Exception {
+        List<String> missingFiles = new ArrayList<>();
+
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
+        List<String> actual = missingFilesConflict.getMissingFiles();
+
+        assertNotNull(actual);
+        assertEquals(0, actual.size());
     }
 }

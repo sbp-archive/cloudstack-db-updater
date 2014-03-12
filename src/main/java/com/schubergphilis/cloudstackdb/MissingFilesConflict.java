@@ -3,16 +3,14 @@ package com.schubergphilis.cloudstackdb;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class MissingFilesConflict implements Conflict {
 
     private final List<String> missingFiles;
 
-    public MissingFilesConflict(Set<String> filesInPreviousVersion, Set<String> filesInCurrentVersion) {
-        missingFiles = new ArrayList<String>(filesInPreviousVersion);
-        missingFiles.removeAll(filesInCurrentVersion);
-        Collections.sort(missingFiles);
+    public MissingFilesConflict(List<String> missingFiles) {
+        this.missingFiles = new ArrayList<String>(missingFiles);
+        Collections.sort(this.missingFiles);
     }
 
     protected List<String> getMissingFiles() {
