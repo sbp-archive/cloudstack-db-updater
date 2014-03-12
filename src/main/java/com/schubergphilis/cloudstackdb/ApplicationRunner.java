@@ -100,8 +100,7 @@ public final class ApplicationRunner implements Runnable {
             sb.append("Found no potential conflicts between the two versions of ACS.\n");
         } else {
             int conflictCount = conflicts.size();
-            sb.append("Found ").append(conflictCount).append("conflict").append(conflictCount > 1 ? "s" : "").append("\n");
-            sb.append("Conflict list:\n");
+            sb.append("Found ").append(conflictCount).append(" potential source").append(conflictCount > 1 ? "s" : "").append(" of conflict\n\n");
             for (Conflict conflict : conflicts) {
                 sb.append(conflict.print()).append("\n");
             }
