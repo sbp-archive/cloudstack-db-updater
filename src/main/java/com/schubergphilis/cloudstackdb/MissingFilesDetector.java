@@ -3,11 +3,10 @@ package com.schubergphilis.cloudstackdb;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-public class MissingFilesDetector extends AbstractConflictDetector {
+public class MissingFilesDetector extends FilePathConflictDetector {
 
     private static final Logger log = Logger.getLogger(MissingFilesDetector.class);
 
@@ -18,14 +17,9 @@ public class MissingFilesDetector extends AbstractConflictDetector {
     @Override
     public List<Conflict> detect() {
         log.info("Detecting missing files");
-        return checkForMissingFiles(currentVersion.getFilenames(), nextVersion.getFilenames());
-    }
-
-    protected static List<Conflict> checkForMissingFiles(Set<String> filesInCurrentVersion, Set<String> filesInNextVersion) {
         List<Conflict> conflicts = new LinkedList<>();
 
-        List<String> missingFiles = new ArrayList<>(filesInCurrentVersion);
-        missingFiles.removeAll(filesInNextVersion);
+        List<String> missingFiles = getMissingFilesFilteringOutMovedFiles();
         if (!missingFiles.isEmpty()) {
             conflicts.add(new MissingFilesConflict(missingFiles));
         }
@@ -33,4 +27,9 @@ public class MissingFilesDetector extends AbstractConflictDetector {
         return conflicts;
     }
 
+    protected List<String> getMissingFilesFilteringOutMovedFiles() {
+        List<String> missingFiles = new ArrayList<>(this.missingFiles);
+        missingFiles.removeAll(this.movedFiles);
+        return missingFiles;
+    }
 }

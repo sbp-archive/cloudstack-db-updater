@@ -83,7 +83,7 @@ public class SourceCodeVersionTest {
 
         srcCodeVersion.addFiles(files);
 
-        Map<String, File> addedFiles = srcCodeVersion.getFiles();
+        Map<String, File> addedFiles = srcCodeVersion.getAbsolutePathToFileMap();
         assertEquals(3, addedFiles.size());
         assertThat(addedFiles.keySet(), hasItems("/src/main/java/package1/ClassA.java", "/src/main/java/package1/ClassB.java", "/src/main/java/package1/package2/ClassC.java"));
     }

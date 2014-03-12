@@ -1,25 +1,16 @@
 package com.schubergphilis.cloudstackdb;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class FileContentHasChangedConflict implements Conflict {
+public class FileContentHasChangedConflict extends AbstractFileListConflict {
 
-    private final List<String> filenames;
-
-    public FileContentHasChangedConflict(List<String> filenames) {
-        this.filenames = new ArrayList<>(filenames);
-        Collections.sort(this.filenames);
+    public FileContentHasChangedConflict(List<String> files) {
+        super(files);
     }
 
     @Override
     public String print() {
-        StringBuffer sb = new StringBuffer("Contents changed:\n");
-        for (String file : filenames) {
-            sb.append("\t- " + file + "\n");
-        }
-        return sb.toString();
+        return print("Files in which content changed:\n");
     }
 
 }

@@ -17,7 +17,7 @@ public class MissingFilesConflictTest {
 
         MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
         List<String> expected = missingFiles;
-        List<String> actual = missingFilesConflict.getMissingFiles();
+        List<String> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -29,7 +29,7 @@ public class MissingFilesConflictTest {
 
         MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
         List<String> expected = Arrays.asList(new String[] {"a", "b", "c"});
-        List<String> actual = missingFilesConflict.getMissingFiles();
+        List<String> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -41,7 +41,7 @@ public class MissingFilesConflictTest {
 
         MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
         List<String> expected = Arrays.asList(new String[] {"a", "b", "c", "d"});
-        List<String> actual = missingFilesConflict.getMissingFiles();
+        List<String> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -52,7 +52,7 @@ public class MissingFilesConflictTest {
         List<String> missingFiles = new ArrayList<>();
 
         MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
-        List<String> actual = missingFilesConflict.getMissingFiles();
+        List<String> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(0, actual.size());

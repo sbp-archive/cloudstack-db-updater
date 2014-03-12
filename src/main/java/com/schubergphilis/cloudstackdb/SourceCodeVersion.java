@@ -58,11 +58,15 @@ public class SourceCodeVersion {
         return files.get(filename);
     }
 
-    public Set<String> getFilenames() {
+    public Set<String> getAbsolutePaths() {
         return files.keySet();
     }
 
-    protected Map<String, File> getFiles() {
+    public Collection<File> getFiles() {
+        return files.values();
+    }
+
+    protected Map<String, File> getAbsolutePathToFileMap() {
         return files;
     }
 
