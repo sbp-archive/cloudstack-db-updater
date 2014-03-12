@@ -10,11 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kohsuke.args4j.CmdLineException;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-@PrepareForTest({ApplicationRunner.class})
 @RunWith(PowerMockRunner.class)
 public class ApplicationRunnerTest {
 
