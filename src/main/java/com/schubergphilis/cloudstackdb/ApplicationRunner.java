@@ -43,7 +43,7 @@ public final class ApplicationRunner implements Runnable {
     protected boolean canParseArguments() {
         CmdLineParser parser = new CmdLineParser(this);
         parser.setUsageWidth(80);
-    
+
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
@@ -51,7 +51,7 @@ public final class ApplicationRunner implements Runnable {
             log.info(printUsageInfoMessage(parser));
             return false;
         }
-    
+
         return true;
     }
 
@@ -89,6 +89,12 @@ public final class ApplicationRunner implements Runnable {
         ConflictDetector detector = new FileSystemConflictDetector(currentVersion, nextVersion);
         List<Conflict> conflicts = detector.detect();
 
+        String findings = printFindings(conflicts);
+
+        log.info(findings);
+    }
+
+    private static String printFindings(List<Conflict> conflicts) {
         StringBuilder sb = new StringBuilder();
         if (conflicts.isEmpty()) {
             sb.append("Found no potential conflicts between the two versions of ACS.\n");
@@ -100,6 +106,8 @@ public final class ApplicationRunner implements Runnable {
                 sb.append(conflict.print()).append("\n");
             }
         }
+        String findings = sb.toString();
+        return findings;
     }
 
 }
