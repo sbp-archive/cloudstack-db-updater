@@ -1,8 +1,10 @@
 package com.schubergphilis.cloudstackdb;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.not;
 
 import java.io.File;
 import java.util.Set;
@@ -20,7 +22,7 @@ public class SourceCodeFileGatherer {
 
     public static Set<File> gatherDbRelatedFiles(File sourceCodeBaseDir) {
         log.info("Gathering DB related files from " + sourceCodeBaseDir.getPath());
-        return FileUtils.gatherFilesThatMatchCriteria(sourceCodeBaseDir, anyOf(containsString("/db/"), endsWith("VO.java")));
+        return FileUtils.gatherFilesThatMatchCriteria(sourceCodeBaseDir, allOf(anyOf(containsString("/db/"), endsWith("VO.java")), not(containsString("/test/"))));
     }
 
 }
