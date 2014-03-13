@@ -2,17 +2,17 @@ package com.schubergphilis.cloudstackdb;
 
 import com.schubergphilis.utils.ClassUtils;
 
-public class SourceCodeFileChange implements Comparable<SourceCodeFileChange> {
+public abstract class ChangedSourceCodeFile implements ChangedRelativePathFile {
 
-    private final SourceCodeFile original;
-    private final SourceCodeFile changed;
+    protected final SourceCodeFile original;
+    protected final SourceCodeFile changed;
 
-    public SourceCodeFileChange(SourceCodeFile original, SourceCodeFile changed) {
+    public ChangedSourceCodeFile(SourceCodeFile original, SourceCodeFile changed) {
         this.original = original;
         this.changed = changed;
     }
 
-    protected SourceCodeFileChange(String original, String changed) {
+    protected ChangedSourceCodeFile(String original, String changed) {
         this.original = new SourceCodeFile(original);
         this.changed = new SourceCodeFile(changed);
     }
@@ -41,8 +41,13 @@ public class SourceCodeFileChange implements Comparable<SourceCodeFileChange> {
     }
 
     @Override
-    public int compareTo(SourceCodeFileChange o) {
-        return original.compareTo(o.original);
+    public String getRelativePath() {
+        return original.getRelativePath();
+    }
+
+    @Override
+    public String getNewRelativePath() {
+        return changed.getRelativePath();
     }
 
 }

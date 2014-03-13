@@ -56,8 +56,8 @@ public class FilePathBasedConflictDetectorTest extends AbstractFileSystemConflic
         Collection<SourceCodeFile> missingFiles = new ArrayList<>();
         Collection<SourceCodeFile> filesInNextVersion = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("z/c")});
 
-        List<SourceCodeFileChange> expected = new ArrayList<>();
-        List<SourceCodeFileChange> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        List<MovedSourceCodeFile> expected = new ArrayList<>();
+        List<MovedSourceCodeFile> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
         assertEquals(expected, actual);
     }
@@ -67,8 +67,8 @@ public class FilePathBasedConflictDetectorTest extends AbstractFileSystemConflic
         Collection<SourceCodeFile> missingFiles = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("a/b/c"), new SourceCodeFile("d/e/f")});
         Collection<SourceCodeFile> filesInNextVersion = new ArrayList<>();
 
-        List<SourceCodeFileChange> expected = new ArrayList<>();
-        List<SourceCodeFileChange> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        List<MovedSourceCodeFile> expected = new ArrayList<>();
+        List<MovedSourceCodeFile> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
         assertEquals(expected, actual);
     }
@@ -80,8 +80,8 @@ public class FilePathBasedConflictDetectorTest extends AbstractFileSystemConflic
         Collection<SourceCodeFile> missingFiles = Arrays.asList(new SourceCodeFile[] {sourceCodeFile1, new SourceCodeFile("d/e/f")});
         Collection<SourceCodeFile> filesInNextVersion = Arrays.asList(new SourceCodeFile[] {sourceCodeFile2});
 
-        List<SourceCodeFileChange> expected = Arrays.asList(new SourceCodeFileChange[] {new SourceCodeFileChange(sourceCodeFile1, sourceCodeFile2)});
-        List<SourceCodeFileChange> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        List<MovedSourceCodeFile> expected = Arrays.asList(new MovedSourceCodeFile[] {new MovedSourceCodeFile(sourceCodeFile1, sourceCodeFile2)});
+        List<MovedSourceCodeFile> actual = FilePathBasedConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
         assertEquals(expected, actual);
     }

@@ -33,7 +33,7 @@ public class MissingFilesDetectorTest extends AbstractFileSystemConflictDetector
     public void testGetMissingFilesFilteringOutMovedFilesWhenMoreThanOneFileIsFiltered() throws Exception {
         SourceCodeFile sourceCodeFile = new SourceCodeFile("file3");
         List<SourceCodeFile> missingFiles = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("file1"), new SourceCodeFile("file2"), sourceCodeFile});
-        List<SourceCodeFileChange> movedFiles = Arrays.asList(new SourceCodeFileChange[] {new SourceCodeFileChange("file1", "fileA"), new SourceCodeFileChange("file2", "fileB")});
+        List<MovedSourceCodeFile> movedFiles = Arrays.asList(new MovedSourceCodeFile[] {new MovedSourceCodeFile("file1", "fileA"), new MovedSourceCodeFile("file2", "fileB")});
 
         List<SourceCodeFile> filteredMissingFiles = MissingFilesDetector.getMissingFilesFilteringOutMovedFiles(missingFiles, movedFiles);
 

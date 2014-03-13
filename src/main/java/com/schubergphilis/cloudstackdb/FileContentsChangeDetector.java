@@ -25,7 +25,7 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
     protected static List<Conflict> checkForChangesInFileContents(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         List<Conflict> conflicts = new LinkedList<>();
 
-        List<SourceCodeFile> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+        List<ContentsChangedSourceCodeFile> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
         if (!filesThatChangedInNewVersion.isEmpty()) {
             conflicts.add(new FileContentHasChangedConflict(filesThatChangedInNewVersion));
         }
@@ -33,8 +33,8 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
         return conflicts;
     }
 
-    protected static List<SourceCodeFile> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
-        List<SourceCodeFile> files = new LinkedList<>();
+    protected static List<ContentsChangedSourceCodeFile> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
+        List<ContentsChangedSourceCodeFile> files = new LinkedList<>();
 
         for (String filename : currentVersion.getPathsRelativeToSourceRoot()) {
             if (nextVersion.containsFile(filename)) {
@@ -45,13 +45,13 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
         return files;
     }
 
-    private static void addFileIfItChanged(SourceCodeFile fileInCurrentVersion, SourceCodeFile FileInNextVersion, List<SourceCodeFile> filenames) {
+    private static void addFileIfItChanged(SourceCodeFile fileInCurrentVersion, SourceCodeFile fileInNextVersion, List<ContentsChangedSourceCodeFile> filenames) {
         try {
-            if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(fileInCurrentVersion.getFile(), FileInNextVersion.getFile())) {
-                filenames.add(fileInCurrentVersion);
+            if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(fileInCurrentVersion.getFile(), fileInNextVersion.getFile())) {
+                filenames.add(new ContentsChangedSourceCodeFile(fileInCurrentVersion, fileInNextVersion));
             }
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't compare the contents of file '" + fileInCurrentVersion.getPathRelativeToSourceRoot() + "' in previous and current version.", e);
+            throw new RuntimeException("Couldn't compare the contents of file '" + fileInCurrentVersion.getRelativePath() + "' in previous and current version.", e);
         }
     }
 

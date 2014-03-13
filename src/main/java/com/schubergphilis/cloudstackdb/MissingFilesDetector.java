@@ -27,11 +27,11 @@ public class MissingFilesDetector extends FilePathBasedConflictDetector {
         return conflicts;
     }
 
-    protected static List<SourceCodeFile> getMissingFilesFilteringOutMovedFiles(List<SourceCodeFile> missingFiles, List<SourceCodeFileChange> movedFiles) {
+    protected static List<SourceCodeFile> getMissingFilesFilteringOutMovedFiles(List<SourceCodeFile> missingFiles, List<MovedSourceCodeFile> movedFiles) {
         ArrayList<SourceCodeFile> filteredMissingFiles = new ArrayList<>(missingFiles);
 
         for (SourceCodeFile missingFile : missingFiles) {
-            for (SourceCodeFileChange movedFile : movedFiles) {
+            for (ChangedSourceCodeFile movedFile : movedFiles) {
                 if (missingFile.equals(movedFile.getOriginal())) {
                     filteredMissingFiles.remove(missingFile);
                     break;

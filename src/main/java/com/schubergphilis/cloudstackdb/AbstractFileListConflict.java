@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractFileListConflict implements Conflict {
+public abstract class AbstractFileListConflict<T extends RelativePathFile & Comparable<T>> implements Conflict {
 
-    protected List<SourceCodeFile> files;
+    protected List<T> files;
 
-    public AbstractFileListConflict(List<SourceCodeFile> files) {
-        this.files = new ArrayList<SourceCodeFile>(files);
+    public AbstractFileListConflict(List<T> files) {
+        this.files = new ArrayList<T>(files);
         Collections.sort(this.files);
     }
 
-    protected List<SourceCodeFile> getFiles() {
+    protected List<T> getFiles() {
         return files;
     }
 
     protected String print(String header) {
         StringBuffer sb = new StringBuffer(header);
-        for (SourceCodeFile file : files) {
-            sb.append("\t- " + file.getPathRelativeToSourceRoot() + "\n");
+        for (T file : files) {
+            sb.append("\t- " + file.getRelativePath() + "\n");
         }
         return sb.toString();
     }

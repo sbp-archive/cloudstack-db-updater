@@ -2,9 +2,9 @@ package com.schubergphilis.cloudstackdb;
 
 import java.util.List;
 
-public class FileContentHasChangedConflict extends AbstractFileListConflict {
+public class FileContentHasChangedConflict extends AbstractFileListConflict<ContentsChangedSourceCodeFile> {
 
-    public FileContentHasChangedConflict(List<SourceCodeFile> files) {
+    public FileContentHasChangedConflict(List<ContentsChangedSourceCodeFile> files) {
         super(files);
     }
 
