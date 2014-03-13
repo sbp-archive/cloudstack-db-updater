@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class FilePathConflictDetector extends AbstractConflictDetector {
+public abstract class FilePathBasedConflictDetector extends AbstractConflictDetector {
 
     protected final List<String> missingFiles;
     protected final Map<String, String> movedFiles;
 
-    public FilePathConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
+    public FilePathBasedConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         super(currentVersion, nextVersion);
 
         missingFiles = getMissingFiles(currentVersion.getPathsRelativeToSourceRoot(), nextVersion.getPathsRelativeToSourceRoot());
