@@ -40,7 +40,7 @@ public class SourceCodeVersionTest {
     }
 
     @Test
-    public void testRemoPrefixWhenPrefixIsNotThere() throws Exception {
+    public void testRemovePrefixWhenPrefixIsNotThere() throws Exception {
         String absolutePath = "some/path/to/a/dir";
         String prefix = "foo";
 
@@ -51,7 +51,7 @@ public class SourceCodeVersionTest {
     }
 
     @Test
-    public void testRemoPrefixWhenPrefixIsrepeated() throws Exception {
+    public void testRemovePrefixWhenPrefixIsrepeated() throws Exception {
         String absolutePath = "some/path/some/path/to/a/dir";
         String prefix = "some/path/";
 

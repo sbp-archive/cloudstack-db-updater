@@ -55,4 +55,24 @@ public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDe
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void testGetFilesThatChangedInNewVersionWhenOneFileChanged() throws Exception {
+        FileUtils.writeToFile("foo", fileCurrentVersion);
+        FileUtils.writeToFile("bar", fileNewVersion);
+
+        List<String> expected = Arrays.asList(new String[] {"/" + filename});
+        List<String> actual = FileContentsChangeDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetFilesThatChangedInNewVersionWhenNoFileChanged() throws Exception {
+        List<String> actual = FileContentsChangeDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+
+        assertNotNull(actual);
+        assertEquals(0, actual.size());
+    }
+
 }

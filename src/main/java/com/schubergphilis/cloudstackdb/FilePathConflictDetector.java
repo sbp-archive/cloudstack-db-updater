@@ -16,7 +16,7 @@ public abstract class FilePathConflictDetector extends AbstractConflictDetector 
     public FilePathConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         super(currentVersion, nextVersion);
 
-        missingFiles = getMissingFiles(currentVersion.getAbsolutePaths(), nextVersion.getAbsolutePaths());
+        missingFiles = getMissingFiles(currentVersion.getPathsRelativeToSourceRoot(), nextVersion.getPathsRelativeToSourceRoot());
         movedFiles = getMovedFiles(missingFiles, nextVersion.getFiles());
     }
 

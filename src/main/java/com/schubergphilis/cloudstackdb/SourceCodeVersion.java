@@ -1,15 +1,10 @@
 package com.schubergphilis.cloudstackdb;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.schubergphilis.utils.FileUtils;
 
 public class SourceCodeVersion {
 
@@ -33,24 +28,6 @@ public class SourceCodeVersion {
         }
     }
 
-    public List<String> getFilesThatChangedInNewVersion(SourceCodeVersion newVersion) {
-        List<String> filenames = new LinkedList<>();
-
-        for (String filename : files.keySet()) {
-            if (newVersion.containsFile(filename)) {
-                try {
-                    if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(files.get(filename).getFile(), newVersion.files.get(filename).getFile())) {
-                        filenames.add(filename);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException("Couldn't compare the contents of file '" + filename + "' in previous and current version.", e);
-                }
-            }
-        }
-
-        return filenames;
-    }
-
     public boolean containsFile(String filename) {
         return files.containsKey(filename);
     }
@@ -59,7 +36,7 @@ public class SourceCodeVersion {
         return files.get(filename);
     }
 
-    public Set<String> getAbsolutePaths() {
+    public Set<String> getPathsRelativeToSourceRoot() {
         return files.keySet();
     }
 
