@@ -13,11 +13,13 @@ public class FileContentHasChangedConflictTest {
 
     @Test
     public void testPrint() throws Exception {
-        List<String> filenames = Arrays.asList(new String[] {"file1", "file2"});
+        String file1 = "file1";
+        String file2 = "file2";
+        List<SourceCodeFile> filenames = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile(file1), new SourceCodeFile(file2)});
 
         FileContentHasChangedConflict fileContentHasChangedConflict = new FileContentHasChangedConflict(filenames);
 
-        assertThat(fileContentHasChangedConflict.print(), allOf(containsString("file1"), containsString("file2")));
+        assertThat(fileContentHasChangedConflict.print(), allOf(containsString(file1), containsString(file2)));
     }
 
 }

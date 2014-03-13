@@ -25,7 +25,7 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
     protected static List<Conflict> checkForChangesInFileContents(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         List<Conflict> conflicts = new LinkedList<>();
 
-        List<String> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+        List<SourceCodeFile> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
         if (!filesThatChangedInNewVersion.isEmpty()) {
             conflicts.add(new FileContentHasChangedConflict(filesThatChangedInNewVersion));
         }
@@ -33,22 +33,22 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
         return conflicts;
     }
 
-    protected static List<String> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
-        List<String> filenames = new LinkedList<>();
+    protected static List<SourceCodeFile> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
+        List<SourceCodeFile> files = new LinkedList<>();
 
         for (String filename : currentVersion.getPathsRelativeToSourceRoot()) {
             if (nextVersion.containsFile(filename)) {
-                addFileIfItChanged(currentVersion.getFile(filename), nextVersion.getFile(filename), filenames);
+                addFileIfItChanged(currentVersion.getFile(filename), nextVersion.getFile(filename), files);
             }
         }
 
-        return filenames;
+        return files;
     }
 
-    private static void addFileIfItChanged(SourceCodeFile fileInCurrentVersion, SourceCodeFile FileInNextVersion, List<String> filenames) {
+    private static void addFileIfItChanged(SourceCodeFile fileInCurrentVersion, SourceCodeFile FileInNextVersion, List<SourceCodeFile> filenames) {
         try {
             if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(fileInCurrentVersion.getFile(), FileInNextVersion.getFile())) {
-                filenames.add(fileInCurrentVersion.getPathRelativeToSourceRoot());
+                filenames.add(fileInCurrentVersion);
             }
         } catch (IOException e) {
             throw new RuntimeException("Couldn't compare the contents of file '" + fileInCurrentVersion.getPathRelativeToSourceRoot() + "' in previous and current version.", e);

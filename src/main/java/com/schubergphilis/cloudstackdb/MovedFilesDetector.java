@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class MovedFilesDetector extends FilePathConflictDetector {
+public class MovedFilesDetector extends FilePathBasedConflictDetector {
 
     private static final Logger log = Logger.getLogger(FileContentsChangeDetector.class);
 

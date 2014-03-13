@@ -4,7 +4,7 @@ import java.util.List;
 
 public class MissingFilesConflict extends AbstractFileListConflict {
 
-    public MissingFilesConflict(List<String> missingFiles) {
+    public MissingFilesConflict(List<SourceCodeFile> missingFiles) {
         super(missingFiles);
     }
 

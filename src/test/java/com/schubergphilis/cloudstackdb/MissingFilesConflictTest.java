@@ -5,19 +5,21 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
 
 public class MissingFilesConflictTest {
 
+    private final List<SourceCodeFile> sortedFiles = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("a"), new SourceCodeFile("b"), new SourceCodeFile("c")});
+
     @Test
     public void testConstructorWhenFilesAreSorted() throws Exception {
-        List<String> missingFiles = Arrays.asList(new String[] {"a", "b", "c"});
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(sortedFiles);
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
-        List<String> expected = missingFiles;
-        List<String> actual = missingFilesConflict.getFiles();
+        List<SourceCodeFile> expected = sortedFiles;
+        List<SourceCodeFile> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -25,11 +27,12 @@ public class MissingFilesConflictTest {
 
     @Test
     public void testConstructorWhenFilesAreSortedInReverseOrder() throws Exception {
-        List<String> missingFiles = Arrays.asList(new String[] {"c", "b", "a"});
+        List<SourceCodeFile> reverseSortedFiles = new ArrayList<>(sortedFiles);
+        Collections.sort(reverseSortedFiles, Collections.reverseOrder());
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(sortedFiles);
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
-        List<String> expected = Arrays.asList(new String[] {"a", "b", "c"});
-        List<String> actual = missingFilesConflict.getFiles();
+        List<SourceCodeFile> expected = sortedFiles;
+        List<SourceCodeFile> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -37,11 +40,12 @@ public class MissingFilesConflictTest {
 
     @Test
     public void testConstructorWhenFilesAreInRandomOrder() throws Exception {
-        List<String> missingFiles = Arrays.asList(new String[] {"c", "a", "d", "b"});
+        List<SourceCodeFile> rendomOrderFiles = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("c"), new SourceCodeFile("a"), new SourceCodeFile("d"),
+                new SourceCodeFile("b")});
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(rendomOrderFiles);
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
-        List<String> expected = Arrays.asList(new String[] {"a", "b", "c", "d"});
-        List<String> actual = missingFilesConflict.getFiles();
+        List<SourceCodeFile> expected = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("a"), new SourceCodeFile("b"), new SourceCodeFile("c"), new SourceCodeFile("d")});
+        List<SourceCodeFile> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -49,10 +53,10 @@ public class MissingFilesConflictTest {
 
     @Test
     public void testConstructorWhenThereAreNoFiles() throws Exception {
-        List<String> missingFiles = new ArrayList<>();
+        List<SourceCodeFile> noFiles = new ArrayList<>();
 
-        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(missingFiles);
-        List<String> actual = missingFilesConflict.getFiles();
+        MissingFilesConflict missingFilesConflict = new MissingFilesConflict(noFiles);
+        List<SourceCodeFile> actual = missingFilesConflict.getFiles();
 
         assertNotNull(actual);
         assertEquals(0, actual.size());

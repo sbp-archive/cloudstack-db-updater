@@ -4,7 +4,7 @@ import java.util.List;
 
 public class FileContentHasChangedConflict extends AbstractFileListConflict {
 
-    public FileContentHasChangedConflict(List<String> files) {
+    public FileContentHasChangedConflict(List<SourceCodeFile> files) {
         super(files);
     }
 

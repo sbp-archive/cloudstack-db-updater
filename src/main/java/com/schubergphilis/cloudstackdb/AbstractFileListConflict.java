@@ -6,21 +6,21 @@ import java.util.List;
 
 public abstract class AbstractFileListConflict implements Conflict {
 
-    protected List<String> files;
+    protected List<SourceCodeFile> files;
 
-    public AbstractFileListConflict(List<String> files) {
-        this.files = new ArrayList<String>(files);
+    public AbstractFileListConflict(List<SourceCodeFile> files) {
+        this.files = new ArrayList<SourceCodeFile>(files);
         Collections.sort(this.files);
     }
 
-    protected List<String> getFiles() {
+    protected List<SourceCodeFile> getFiles() {
         return files;
     }
 
     protected String print(String header) {
         StringBuffer sb = new StringBuffer(header);
-        for (String file : files) {
-            sb.append("\t- " + file + "\n");
+        for (SourceCodeFile file : files) {
+            sb.append("\t- " + file.getPathRelativeToSourceRoot() + "\n");
         }
         return sb.toString();
     }

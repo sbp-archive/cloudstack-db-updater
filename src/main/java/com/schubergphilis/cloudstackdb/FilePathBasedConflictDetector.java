@@ -3,38 +3,35 @@ package com.schubergphilis.cloudstackdb;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class FilePathBasedConflictDetector extends AbstractConflictDetector {
 
-    protected final List<String> missingFiles;
-    protected final Map<String, String> movedFiles;
+    protected final List<SourceCodeFile> missingFiles;
+    protected final List<SourceCodeFileChange> movedFiles;
 
     public FilePathBasedConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         super(currentVersion, nextVersion);
 
-        missingFiles = getMissingFiles(currentVersion.getPathsRelativeToSourceRoot(), nextVersion.getPathsRelativeToSourceRoot());
+        missingFiles = getMissingFiles(currentVersion.getFiles(), nextVersion.getFiles());
         movedFiles = getMovedFiles(missingFiles, nextVersion.getFiles());
     }
 
-    protected static List<String> getMissingFiles(Set<String> filesInCurrentVersion, Set<String> filesInNextVersion) {
-        List<String> missingFiles = new ArrayList<>(filesInCurrentVersion);
+    protected static List<SourceCodeFile> getMissingFiles(Collection<SourceCodeFile> filesInCurrentVersion, Collection<SourceCodeFile> filesInNextVersion) {
+        List<SourceCodeFile> missingFiles = new ArrayList<>(filesInCurrentVersion);
         missingFiles.removeAll(filesInNextVersion);
         return missingFiles;
     }
 
-    protected static Map<String, String> getMovedFiles(List<String> missingFiles, Collection<SourceCodeFile> filesInNextVersion) {
-        Map<String, String> movedFiles = new HashMap<>(missingFiles.size());
+    protected static List<SourceCodeFileChange> getMovedFiles(Collection<SourceCodeFile> missingFiles, Collection<SourceCodeFile> filesInNextVersion) {
+        List<SourceCodeFileChange> movedFiles = new ArrayList<>(missingFiles.size());
 
-        for (String missingFile : missingFiles) {
-            File file = new File(missingFile);
+        for (SourceCodeFile missingFile : missingFiles) {
+            File file = missingFile.getFile();
             String fileName = file.getName();
             for (SourceCodeFile fileInNextVersion : filesInNextVersion) {
                 if (fileInNextVersion.getFile().getName().equals(fileName)) {
-                    movedFiles.put(missingFile, fileInNextVersion.getPathRelativeToSourceRoot());
+                    movedFiles.add(new SourceCodeFileChange(missingFile, fileInNextVersion));
                 }
             }
         }
