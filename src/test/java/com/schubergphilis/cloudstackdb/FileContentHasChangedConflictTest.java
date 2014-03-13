@@ -15,7 +15,7 @@ public class FileContentHasChangedConflictTest {
     public void testPrint() throws Exception {
         String file1 = "file1";
         String file2 = "file2";
-        List<ContentsChangedSourceCodeFile> filenames = Arrays.asList(new ContentsChangedSourceCodeFile[] {new ContentsChangedSourceCodeFile(file1, ""),
+        List<ChangedSourceCodeFile> filenames = Arrays.asList(new ChangedSourceCodeFile[] {new ContentsChangedSourceCodeFile(file1, ""),
                 new ContentsChangedSourceCodeFile(file2, "")});
 
         FileContentHasChangedConflict fileContentHasChangedConflict = new FileContentHasChangedConflict(filenames);

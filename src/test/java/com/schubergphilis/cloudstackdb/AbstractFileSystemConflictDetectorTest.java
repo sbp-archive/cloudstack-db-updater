@@ -22,6 +22,7 @@ public abstract class AbstractFileSystemConflictDetectorTest {
     protected final String nameOfFileThatWillBeMoved = "fileThatWillBeMoved";
     protected File fileCurrentVersion;
     protected File fileNewVersion;
+    protected String newDir = "newDir";
 
     @Before
     public void setup() throws Exception {
@@ -29,7 +30,7 @@ public abstract class AbstractFileSystemConflictDetectorTest {
         fileNewVersion = rootFolderNewVersion.newFile(filename);
         File fileThatWillBeMissing = rootFolderCurrentVersion.newFile(nameOfFileThatWillBeMissing);
         File fileThatWillBeMoved = rootFolderCurrentVersion.newFile(nameOfFileThatWillBeMoved);
-        String newDir = "newDir";
+
         rootFolderNewVersion.newFolder(newDir);
         File fileThatHasBeenMoved = rootFolderNewVersion.newFile(newDir + "/" + nameOfFileThatWillBeMoved);
 

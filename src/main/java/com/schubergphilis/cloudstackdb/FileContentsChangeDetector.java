@@ -1,12 +1,9 @@
 package com.schubergphilis.cloudstackdb;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import com.schubergphilis.utils.FileUtils;
 
 public class FileContentsChangeDetector extends AbstractConflictDetector {
 
@@ -25,7 +22,7 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
     protected static List<Conflict> checkForChangesInFileContents(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         List<Conflict> conflicts = new LinkedList<>();
 
-        List<ContentsChangedSourceCodeFile> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+        List<ChangedSourceCodeFile> filesThatChangedInNewVersion = getFilesThatChangedInNewVersion(currentVersion, nextVersion);
         if (!filesThatChangedInNewVersion.isEmpty()) {
             conflicts.add(new FileContentHasChangedConflict(filesThatChangedInNewVersion));
         }
@@ -33,26 +30,16 @@ public class FileContentsChangeDetector extends AbstractConflictDetector {
         return conflicts;
     }
 
-    protected static List<ContentsChangedSourceCodeFile> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
-        List<ContentsChangedSourceCodeFile> files = new LinkedList<>();
+    protected static List<ChangedSourceCodeFile> getFilesThatChangedInNewVersion(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
+        List<ChangedSourceCodeFile> files = new LinkedList<>();
 
         for (String filename : currentVersion.getPathsRelativeToSourceRoot()) {
             if (nextVersion.containsFile(filename)) {
-                addFileIfItChanged(currentVersion.getFile(filename), nextVersion.getFile(filename), files);
+                addFileIfContentsChanged(new ContentsChangedSourceCodeFile(currentVersion.getFile(filename), nextVersion.getFile(filename)), files);
             }
         }
 
         return files;
-    }
-
-    private static void addFileIfItChanged(SourceCodeFile fileInCurrentVersion, SourceCodeFile fileInNextVersion, List<ContentsChangedSourceCodeFile> filenames) {
-        try {
-            if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(fileInCurrentVersion.getFile(), fileInNextVersion.getFile())) {
-                filenames.add(new ContentsChangedSourceCodeFile(fileInCurrentVersion, fileInNextVersion));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't compare the contents of file '" + fileInCurrentVersion.getRelativePath() + "' in previous and current version.", e);
-        }
     }
 
 }

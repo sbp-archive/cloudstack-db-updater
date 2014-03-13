@@ -1,6 +1,6 @@
 package com.schubergphilis.cloudstackdb;
 
-public class ContentsChangedSourceCodeFile extends ChangedSourceCodeFile implements Comparable<ContentsChangedSourceCodeFile> {
+public class ContentsChangedSourceCodeFile extends ChangedSourceCodeFile {
 
     public ContentsChangedSourceCodeFile(SourceCodeFile original, SourceCodeFile changed) {
         super(original, changed);
@@ -13,11 +13,6 @@ public class ContentsChangedSourceCodeFile extends ChangedSourceCodeFile impleme
     @Override
     public String print() {
         return original.print();
-    }
-
-    @Override
-    public int compareTo(ContentsChangedSourceCodeFile scf) {
-        return original.compareTo(scf.original);
     }
 
 }
