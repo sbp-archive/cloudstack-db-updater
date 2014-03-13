@@ -13,7 +13,7 @@ import com.schubergphilis.utils.FileUtils;
 
 public class SourceCodeVersion {
 
-    private final Map<String, File> files = new HashMap<String, File>();
+    private final Map<String, SourceCodeFile> files = new HashMap<String, SourceCodeFile>();
     private final File baseDir;
 
     public SourceCodeVersion(File baseDir) {
@@ -28,7 +28,8 @@ public class SourceCodeVersion {
                 throw new RuntimeException(String.format("Trying to add a file that does not belong to this source code version.\nBase directory = '%s'\nFile = '%s'.",
                         baseDirAbsolutePath, fileAbsolutePath));
             }
-            this.files.put(removePrefix(fileAbsolutePath, baseDirAbsolutePath), file);
+            String pathRelativeToSourceRoot = removePrefix(fileAbsolutePath, baseDirAbsolutePath);
+            this.files.put(pathRelativeToSourceRoot, new SourceCodeFile(file, pathRelativeToSourceRoot));
         }
     }
 
@@ -38,7 +39,7 @@ public class SourceCodeVersion {
         for (String filename : files.keySet()) {
             if (newVersion.containsFile(filename)) {
                 try {
-                    if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(files.get(filename), newVersion.files.get(filename))) {
+                    if (!FileUtils.filesHaveSameContentsNotConsideringTraillingWhiteSpace(files.get(filename).getFile(), newVersion.files.get(filename).getFile())) {
                         filenames.add(filename);
                     }
                 } catch (IOException e) {
@@ -54,7 +55,7 @@ public class SourceCodeVersion {
         return files.containsKey(filename);
     }
 
-    public File getFile(String filename) {
+    public SourceCodeFile getFile(String filename) {
         return files.get(filename);
     }
 
@@ -62,11 +63,11 @@ public class SourceCodeVersion {
         return files.keySet();
     }
 
-    public Collection<File> getFiles() {
+    public Collection<SourceCodeFile> getFiles() {
         return files.values();
     }
 
-    protected Map<String, File> getAbsolutePathToFileMap() {
+    protected Map<String, SourceCodeFile> getRelativePathToFilesMap() {
         return files;
     }
 

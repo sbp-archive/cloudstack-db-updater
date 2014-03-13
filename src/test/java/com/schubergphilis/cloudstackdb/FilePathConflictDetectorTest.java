@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
@@ -58,34 +58,34 @@ public class FilePathConflictDetectorTest extends AbstractFileSystemConflictDete
     @Test
     public void testGetMovedFilesWhenNoFilesAreMissing() throws Exception {
         List<String> missingFiles = new ArrayList<>();
-        Collection<File> filesInNextVersion = Arrays.asList(new File[] {new File("z/c")});
+        Collection<SourceCodeFile> filesInNextVersion = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("z/c")});
 
         List<String> expected = new ArrayList<>();
-        List<String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        Map<String, String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, new ArrayList<>(actual.keySet()));
     }
 
     @Test
     public void testGetMovedFilesWhenNextVersionHasNoFiles() throws Exception {
         List<String> missingFiles = Arrays.asList(new String[] {"a/b/c", "d/e/f"});
-        Collection<File> filesInNextVersion = new ArrayList<>();
+        Collection<SourceCodeFile> filesInNextVersion = new ArrayList<>();
 
         List<String> expected = new ArrayList<>();
-        List<String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        Map<String, String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, new ArrayList<>(actual.keySet()));
     }
 
     @Test
     public void testGetMovedFilesWhenOneFileMoved() throws Exception {
         List<String> missingFiles = Arrays.asList(new String[] {"a/b/c", "d/e/f"});
-        Collection<File> filesInNextVersion = Arrays.asList(new File[] {new File("z/c")});
+        Collection<SourceCodeFile> filesInNextVersion = Arrays.asList(new SourceCodeFile[] {new SourceCodeFile("z/c")});
 
         List<String> expected = Arrays.asList(new String[] {"a/b/c"});
-        List<String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
+        Map<String, String> actual = FilePathConflictDetector.getMovedFiles(missingFiles, filesInNextVersion);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, new ArrayList<>(actual.keySet()));
     }
 
 }

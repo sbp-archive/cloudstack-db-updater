@@ -29,7 +29,7 @@ public class MissingFilesDetector extends FilePathConflictDetector {
 
     protected List<String> getMissingFilesFilteringOutMovedFiles() {
         List<String> missingFiles = new ArrayList<>(this.missingFiles);
-        missingFiles.removeAll(this.movedFiles);
+        missingFiles.removeAll(this.movedFiles.keySet());
         return missingFiles;
     }
 }

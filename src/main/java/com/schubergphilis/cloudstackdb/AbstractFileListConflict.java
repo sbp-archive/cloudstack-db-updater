@@ -17,7 +17,7 @@ public abstract class AbstractFileListConflict implements Conflict {
         return files;
     }
 
-    public String print(String header) {
+    protected String print(String header) {
         StringBuffer sb = new StringBuffer(header);
         for (String file : files) {
             sb.append("\t- " + file + "\n");
