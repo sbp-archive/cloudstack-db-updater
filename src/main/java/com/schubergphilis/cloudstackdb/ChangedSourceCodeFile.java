@@ -27,17 +27,17 @@ public abstract class ChangedSourceCodeFile implements ChangedRelativePathFile, 
 
     @Override
     public boolean equals(Object obj) {
-        return ClassUtils.equals(this, obj);
+        return ClassUtils.doEquals(this, obj);
     }
 
     @Override
     public int hashCode() {
-        return ClassUtils.hashCode(this);
+        return ClassUtils.doHashCode(this);
     }
 
     @Override
     public String toString() {
-        return ClassUtils.toString(this);
+        return ClassUtils.doToString(this);
     }
 
     @Override

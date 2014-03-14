@@ -6,15 +6,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class ClassUtils {
 
-    public static boolean equals(Object leftHandSide, Object rightHandSide, String... excludedFields) {
+    public static boolean doEquals(Object leftHandSide, Object rightHandSide, String... excludedFields) {
         return EqualsBuilder.reflectionEquals(leftHandSide, rightHandSide, excludedFields);
     }
 
-    public static int hashCode(Object object, String... excludedFields) {
+    public static int doHashCode(Object object, String... excludedFields) {
         return HashCodeBuilder.reflectionHashCode(object, excludedFields);
     }
 
-    public static String toString(Object object) {
+    public static String doToString(Object object) {
         return ToStringBuilder.reflectionToString(object);
     }
 

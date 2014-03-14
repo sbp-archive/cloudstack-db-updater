@@ -30,17 +30,17 @@ public class SourceCodeFile implements RelativePathFile, Comparable<SourceCodeFi
 
     @Override
     public boolean equals(Object obj) {
-        return ClassUtils.equals(this, obj, "file");
+        return ClassUtils.doEquals(this, obj, "file");
     }
 
     @Override
     public int hashCode() {
-        return ClassUtils.hashCode(this, "file");
+        return ClassUtils.doHashCode(this, "file");
     }
 
     @Override
     public String toString() {
-        return ClassUtils.toString(this);
+        return ClassUtils.doToString(this);
     }
 
     @Override
