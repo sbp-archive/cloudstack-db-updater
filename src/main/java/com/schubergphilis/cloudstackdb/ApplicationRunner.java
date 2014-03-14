@@ -27,6 +27,10 @@ public final class ApplicationRunner implements Runnable {
     private List<String> args;
     protected String findings;
 
+    protected ApplicationRunner(String[] args) {
+        setArgs(args);
+    }
+
     public static void main(String[] args) {
         new ApplicationRunner(args).doRun();
     }
@@ -53,10 +57,6 @@ public final class ApplicationRunner implements Runnable {
         }
 
         return true;
-    }
-
-    protected ApplicationRunner(String[] args) {
-        setArgs(args);
     }
 
     protected static String printUsage() {
