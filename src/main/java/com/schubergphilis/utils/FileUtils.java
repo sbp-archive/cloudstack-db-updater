@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import org.hamcrest.Matcher;
 
-public final class FileUtils {
+public class FileUtils {
 
     private FileUtils() {
     }
@@ -24,7 +24,7 @@ public final class FileUtils {
         if (!removeTraillingWhiteSpace) {
             return lines;
         } else {
-            ArrayList<String> trimmedLines = new ArrayList<String>(lines.size());
+            List<String> trimmedLines = new ArrayList<String>(lines.size());
             for (String line : lines) {
                 String trimmedLine = line.trim();
                 if (!trimmedLine.isEmpty()) {

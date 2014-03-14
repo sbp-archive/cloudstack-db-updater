@@ -28,7 +28,7 @@ public class MissingFilesDetector extends FilePathBasedConflictDetector {
     }
 
     protected static List<SourceCodeFile> getMissingFilesFilteringOutMovedFiles(List<SourceCodeFile> missingFiles, List<MovedSourceCodeFile> movedFiles) {
-        ArrayList<SourceCodeFile> filteredMissingFiles = new ArrayList<>(missingFiles);
+        List<SourceCodeFile> filteredMissingFiles = new ArrayList<>(missingFiles);
 
         for (SourceCodeFile missingFile : missingFiles) {
             for (ChangedSourceCodeFile movedFile : movedFiles) {
