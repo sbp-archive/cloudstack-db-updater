@@ -4,8 +4,6 @@ import java.util.List;
 
 public class MissingFilesConflict extends AbstractFileListConflict<SourceCodeFile> {
 
-    protected List<SourceCodeFile> files;
-
     public MissingFilesConflict(List<SourceCodeFile> missingFiles) {
         super(missingFiles);
     }
