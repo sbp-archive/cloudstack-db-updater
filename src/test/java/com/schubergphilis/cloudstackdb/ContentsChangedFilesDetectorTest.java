@@ -13,14 +13,14 @@ import org.junit.Test;
 
 import com.schubergphilis.utils.FileUtils;
 
-public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDetectorTest {
+public class ContentsChangedFilesDetectorTest extends AbstractFileSystemConflictDetectorTest {
 
     @Test
     public void testCheckForChangesInFileContentsWhenNoFileHasChanged() throws Exception {
         FileUtils.writeToFile("foo", fileCurrentVersion);
         FileUtils.writeToFile("foo", fileNewVersion);
 
-        List<Conflict> conflicts = FileContentsChangeDetector.checkForChangesInFileContents(currentVersion, nextVersion);
+        List<Conflict> conflicts = ContentsChangedFilesDetector.checkForChangesInFileContents(currentVersion, nextVersion);
 
         assertNotNull(conflicts);
         assertEquals(0, conflicts.size());
@@ -38,7 +38,7 @@ public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDe
         currentVersion.addFiles(Arrays.asList(new File[] {otherFileCurrentVersion}));
         nextVersion.addFiles(Arrays.asList(new File[] {otherFileNewVersion}));
 
-        List<Conflict> conflicts = FileContentsChangeDetector.checkForChangesInFileContents(currentVersion, nextVersion);
+        List<Conflict> conflicts = ContentsChangedFilesDetector.checkForChangesInFileContents(currentVersion, nextVersion);
 
         assertNotNull(conflicts);
         assertEquals(1, conflicts.size());
@@ -47,9 +47,9 @@ public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDe
 
     @Test
     public void testDetectAppliesCheckForMissingFiles() throws Exception {
-        FileContentsChangeDetector detector = new FileContentsChangeDetector(currentVersion, nextVersion);
+        ContentsChangedFilesDetector detector = new ContentsChangedFilesDetector(currentVersion, nextVersion);
 
-        List<Conflict> expected = FileContentsChangeDetector.checkForChangesInFileContents(currentVersion, nextVersion);
+        List<Conflict> expected = ContentsChangedFilesDetector.checkForChangesInFileContents(currentVersion, nextVersion);
         List<Conflict> actual = detector.detect();
 
         assertEquals(expected, actual);
@@ -61,7 +61,7 @@ public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDe
         FileUtils.writeToFile("bar", fileNewVersion);
 
         List<ChangedSourceCodeFile> expected = Arrays.asList(new ChangedSourceCodeFile[] {new ContentsChangedSourceCodeFile("/" + filename, "/" + filename)});
-        List<ChangedSourceCodeFile> actual = FileContentsChangeDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+        List<ChangedSourceCodeFile> actual = ContentsChangedFilesDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -69,7 +69,7 @@ public class FileContentsChangeDetectorTest extends AbstractFileSystemConflictDe
 
     @Test
     public void testGetFilesThatChangedInNewVersionWhenNoFileChanged() throws Exception {
-        List<ChangedSourceCodeFile> actual = FileContentsChangeDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
+        List<ChangedSourceCodeFile> actual = ContentsChangedFilesDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);
 
         assertNotNull(actual);
         assertEquals(0, actual.size());

@@ -18,7 +18,7 @@ public class FileSystemConflictDetectorTest {
     private MissingFilesDetector missingFilesDetectorMock;
 
     @Mock
-    private FileContentsChangeDetector fileContentsChangeDetectorMock;
+    private ContentsChangedFilesDetector fileContentsChangeDetectorMock;
 
     @Mock
     private SourceCodeVersion currentVersionMock;

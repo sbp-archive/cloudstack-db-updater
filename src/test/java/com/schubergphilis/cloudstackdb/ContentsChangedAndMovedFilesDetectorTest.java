@@ -13,13 +13,13 @@ import org.junit.Test;
 
 import com.schubergphilis.utils.FileUtils;
 
-public class MovedFilesWithChangesToContentDetectorTest extends AbstractFileSystemConflictDetectorTest {
+public class ContentsChangedAndMovedFilesDetectorTest extends AbstractFileSystemConflictDetectorTest {
 
-    private MovedFilesWithChangesToContentDetector detector;
+    private ContentsChangedAndMovedFilesDetector detector;
 
     @Test
     public void testDetectWhenNoFileWasMoved() throws Exception {
-        detector = new MovedFilesWithChangesToContentDetector(currentVersion, nextVersion);
+        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion);
 
         List<Conflict> conflicts = detector.detect();
 
@@ -37,7 +37,7 @@ public class MovedFilesWithChangesToContentDetectorTest extends AbstractFileSyst
         FileUtils.writeToFile("bar", fileThatHasBeenMovedAndContentsHaveChanged);
         currentVersion.addFiles(Arrays.asList(new File[] {fileThatWillBeMovedAndContentsWillChange}));
         nextVersion.addFiles(Arrays.asList(new File[] {fileThatHasBeenMovedAndContentsHaveChanged}));
-        detector = new MovedFilesWithChangesToContentDetector(currentVersion, nextVersion);
+        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion);
 
         List<Conflict> conflicts = detector.detect();
 

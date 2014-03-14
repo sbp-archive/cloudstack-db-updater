@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class MovedFilesWithChangesToContentDetector extends FilePathBasedConflictDetector {
+public class ContentsChangedAndMovedFilesDetector extends FilePathBasedConflictDetector {
 
-    private static final Logger log = Logger.getLogger(FileContentsChangeDetector.class);
+    private static final Logger log = Logger.getLogger(ContentsChangedFilesDetector.class);
 
-    public MovedFilesWithChangesToContentDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
+    public ContentsChangedAndMovedFilesDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
         super(currentVersion, nextVersion);
     }
 

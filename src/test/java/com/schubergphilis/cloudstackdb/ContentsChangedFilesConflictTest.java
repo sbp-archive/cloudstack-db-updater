@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class FileContentHasChangedConflictTest {
+public class ContentsChangedFilesConflictTest {
 
     @Test
     public void testPrint() throws Exception {
@@ -18,7 +18,7 @@ public class FileContentHasChangedConflictTest {
         List<ChangedSourceCodeFile> filenames = Arrays.asList(new ChangedSourceCodeFile[] {new ContentsChangedSourceCodeFile(file1, ""),
                 new ContentsChangedSourceCodeFile(file2, "")});
 
-        FileContentHasChangedConflict fileContentHasChangedConflict = new FileContentHasChangedConflict(filenames);
+        ContentsChangedFilesConflict fileContentHasChangedConflict = new ContentsChangedFilesConflict(filenames);
 
         assertThat(fileContentHasChangedConflict.print(), allOf(containsString(file1), containsString(file2)));
     }

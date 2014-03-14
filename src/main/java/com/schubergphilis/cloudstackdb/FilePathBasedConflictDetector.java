@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class FilePathBasedConflictDetector extends AbstractConflictDetector {
 
     protected final List<SourceCodeFile> missingFiles;
+    protected final List<SourceCodeFile> newFiles;
     protected final List<MovedSourceCodeFile> movedFiles;
 
     public FilePathBasedConflictDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
@@ -15,6 +16,7 @@ public abstract class FilePathBasedConflictDetector extends AbstractConflictDete
 
         missingFiles = getMissingFiles(currentVersion.getFiles(), nextVersion.getFiles());
         movedFiles = getMovedFiles(missingFiles, nextVersion.getFiles());
+        newFiles = getMissingFiles(nextVersion.getFiles(), currentVersion.getFiles());
     }
 
     protected static List<SourceCodeFile> getMissingFiles(Collection<SourceCodeFile> filesInCurrentVersion, Collection<SourceCodeFile> filesInNextVersion) {
