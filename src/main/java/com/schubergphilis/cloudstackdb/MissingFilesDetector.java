@@ -10,16 +10,16 @@ public class MissingFilesDetector extends FilePathBasedConflictDetector {
 
     private static final Logger log = Logger.getLogger(MissingFilesDetector.class);
 
-    public MissingFilesDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
-        super(currentVersion, nextVersion);
+    public MissingFilesDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion, FileLists fileLists) {
+        super(currentVersion, nextVersion, fileLists);
     }
 
     @Override
     public List<Conflict> detect() {
         log.info("Detecting missing files");
-        List<Conflict> conflicts = new LinkedList<>();
 
-        List<SourceCodeFile> filteredMissingFiles = getMissingFilesFilteringOutMovedFiles(missingFiles, movedFiles);
+        List<Conflict> conflicts = new LinkedList<>();
+        List<SourceCodeFile> filteredMissingFiles = getMissingFilesFilteringOutMovedFiles(fileLists.getMissingFiles(), fileLists.getMovedFiles());
         if (!filteredMissingFiles.isEmpty()) {
             conflicts.add(new MissingFilesConflict(filteredMissingFiles));
         }
@@ -41,4 +41,5 @@ public class MissingFilesDetector extends FilePathBasedConflictDetector {
 
         return filteredMissingFiles;
     }
+
 }

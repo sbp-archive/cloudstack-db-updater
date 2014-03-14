@@ -10,15 +10,15 @@ public class ContentsChangedAndMovedFilesDetector extends FilePathBasedConflictD
 
     private static final Logger log = Logger.getLogger(ContentsChangedFilesDetector.class);
 
-    public ContentsChangedAndMovedFilesDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion) {
-        super(currentVersion, nextVersion);
+    public ContentsChangedAndMovedFilesDetector(SourceCodeVersion currentVersion, SourceCodeVersion nextVersion, FileLists fileLists) {
+        super(currentVersion, nextVersion, fileLists);
     }
 
     @Override
     public List<Conflict> detect() {
         log.info("Detecting moved files with changes to content");
 
-        List<ChangedSourceCodeFile> contentsChangedAndMovedSourceCodeFiles = getFilesThatMovedAndContentsChanged(movedFiles);
+        List<ChangedSourceCodeFile> contentsChangedAndMovedSourceCodeFiles = getFilesThatMovedAndContentsChanged(fileLists.getMovedFiles());
         List<Conflict> conflicts = new LinkedList<>();
         if (!contentsChangedAndMovedSourceCodeFiles.isEmpty()) {
             conflicts.add(new ContentsChangedAndMovedFilesConflict(contentsChangedAndMovedSourceCodeFiles));
