@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class ClassUtils {
 
+    private ClassUtils() {
+    }
+
     public static boolean doEquals(Object leftHandSide, Object rightHandSide, String... excludedFields) {
         return EqualsBuilder.reflectionEquals(leftHandSide, rightHandSide, excludedFields);
     }
