@@ -25,6 +25,7 @@ public final class ApplicationRunner implements Runnable {
     private File nextVersionSourceCodeDir;
 
     private List<String> args;
+    protected String findings;
 
     public static void main(String[] args) {
         new ApplicationRunner(args).doRun();
@@ -39,7 +40,7 @@ public final class ApplicationRunner implements Runnable {
         this.args = Arrays.asList(args);
     }
 
-    protected boolean canParseArguments() {
+    private boolean canParseArguments() {
         CmdLineParser parser = new CmdLineParser(this);
         parser.setUsageWidth(80);
 
@@ -82,7 +83,7 @@ public final class ApplicationRunner implements Runnable {
         }
     }
 
-    protected void runDetectionAndReportFindings() {
+    private void runDetectionAndReportFindings() {
         Set<File> currentVersionFiles = SourceCodeFileGatherer.gatherDbRelatedFiles(currentVersionSourceCodeDir);
         Set<File> nextVersionFiles = SourceCodeFileGatherer.gatherDbRelatedFiles(nextVersionSourceCodeDir);
 
@@ -94,12 +95,12 @@ public final class ApplicationRunner implements Runnable {
         ConflictDetector detector = new FileSystemConflictDetector(currentVersion, nextVersion);
         List<Conflict> conflicts = detector.detect();
 
-        String findings = printFindings(conflicts);
+        findings = printFindings(conflicts);
 
         log.info(findings);
     }
 
-    private static String printFindings(List<Conflict> conflicts) {
+    protected static String printFindings(List<Conflict> conflicts) {
         StringBuilder sb = new StringBuilder();
         if (conflicts.isEmpty()) {
             sb.append("Found no potential conflicts between the two versions of ACS.\n");
