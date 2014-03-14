@@ -20,7 +20,7 @@ public class SourceCodeVersion {
             String fileAbsolutePath = file.getAbsolutePath();
             String baseDirAbsolutePath = baseDir.getAbsolutePath();
             if (fileDoesNotBelongToSourceCode(fileAbsolutePath, baseDirAbsolutePath)) {
-                throw new RuntimeException(String.format("Trying to add a file that does not belong to this source code version.\nBase directory = '%s'\nFile = '%s'.",
+                throw new RuntimeException(String.format("Trying to add a file that does not belong to this source code version.%nBase directory = '%s'%nFile = '%s'.",
                         baseDirAbsolutePath, fileAbsolutePath));
             }
             String pathRelativeToSourceRoot = removePrefix(fileAbsolutePath, baseDirAbsolutePath);
