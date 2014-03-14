@@ -22,7 +22,7 @@ public class SourceCodeFileGatherer {
 
     public static Set<File> gatherDbRelatedFiles(File sourceCodeBaseDir) {
         log.info("Gathering DB related files from " + sourceCodeBaseDir.getPath());
-        return FileUtils.gatherFilesThatMatchCriteria(sourceCodeBaseDir, allOf(anyOf(containsString("/db/"), endsWith("VO.java")), not(containsString("/test/"))));
+        return FileUtils.gatherFilesThatMatchCriteria(sourceCodeBaseDir,
+                allOf(anyOf(containsString("/db/"), endsWith("VO.java")), not(containsString("/test/")), not(containsString("/target/"))));
     }
-
 }

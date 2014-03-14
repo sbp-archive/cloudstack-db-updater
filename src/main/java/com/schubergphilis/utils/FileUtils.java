@@ -15,6 +15,10 @@ public class FileUtils {
     private FileUtils() {
     }
 
+    public static void copyDirectory(File srcDir, File dstDir) throws IOException {
+        org.apache.commons.io.FileUtils.copyDirectory(srcDir, dstDir);
+    }
+
     public static List<String> readLines(File file) throws IOException {
         return readLines(file, false);
     }

@@ -28,6 +28,9 @@ public class FileUtilsTest {
     @Rule
     public TemporaryFolder rootFolder = new TemporaryFolder();
 
+    @Rule
+    public TemporaryFolder dstFolder = new TemporaryFolder();
+
     private File file1;
     private File file2;
     private final String filename = "file";
@@ -175,5 +178,21 @@ public class FileUtilsTest {
         assertNotNull(gatheredFiles);
         assertEquals(2, gatheredFiles.size());
         assertThat(gatheredFiles, IsIterableContainingInAnyOrder.<File> containsInAnyOrder(hasProperty("name", is(someName)), hasProperty("name", is(yetAnotherName))));
+    }
+
+    @Test
+    public void testCopyDirectory() throws Exception {
+        String someName = "somename";
+        String otherName = "othername";
+        String yetAnotherName = "yetanothername";
+        rootFolder.newFile(someName);
+        rootFolder.newFile(otherName);
+        String folder = "dir";
+        rootFolder.newFolder(folder);
+        rootFolder.newFile(folder + "/" + yetAnotherName);
+
+        FileUtils.copyDirectory(rootFolder.getRoot(), dstFolder.getRoot());
+
+        assertEquals(3, dstFolder.getRoot().list().length);
     }
 }
