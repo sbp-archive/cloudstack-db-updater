@@ -2,6 +2,7 @@ package com.schubergphilis.cloudstackdb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public final class ApplicationRunner implements Runnable {
     @Option(name = "-nv", required = true, usage = "set the directory with the next version of ACS", metaVar = "DIR")
     private File nextVersionSourceCodeDir;
 
-    private String[] args;
+    private List<String> args;
 
     public static void main(String[] args) {
         new ApplicationRunner(args).run();
@@ -37,7 +38,7 @@ public final class ApplicationRunner implements Runnable {
     }
 
     public void setArgs(String[] args) {
-        this.args = args;
+        this.args = Arrays.asList(args);
     }
 
     protected boolean canParseArguments() {
@@ -56,7 +57,7 @@ public final class ApplicationRunner implements Runnable {
     }
 
     protected ApplicationRunner(String[] args) {
-        this.args = args;
+        setArgs(args);
     }
 
     protected static String printUsage() {
