@@ -18,7 +18,7 @@ public abstract class AbstractFileListConflict<T extends RelativePathFile & Comp
     }
 
     protected String print(String header) {
-        StringBuffer sb = new StringBuffer(header);
+        StringBuilder sb = new StringBuilder(header);
         for (T file : files) {
             sb.append("\t- " + file.print() + "\n");
         }
