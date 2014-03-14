@@ -20,7 +20,7 @@ public abstract class AbstractFileListConflict<T extends RelativePathFile & Comp
     protected String print(String header) {
         StringBuffer sb = new StringBuffer(header);
         for (T file : files) {
-            sb.append("\t- " + file.getRelativePath() + "\n");
+            sb.append("\t- " + file.print() + "\n");
         }
         return sb.toString();
     }
