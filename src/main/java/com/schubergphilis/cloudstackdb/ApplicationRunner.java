@@ -27,14 +27,12 @@ public final class ApplicationRunner implements Runnable {
     private List<String> args;
 
     public static void main(String[] args) {
-        new ApplicationRunner(args).run();
+        new ApplicationRunner(args).doRun();
     }
 
     @Override
     public void run() {
-        if (canParseArguments()) {
-            doRun();
-        }
+        doRun();
     }
 
     public void setArgs(String[] args) {
@@ -79,6 +77,12 @@ public final class ApplicationRunner implements Runnable {
     }
 
     protected void doRun() {
+        if (canParseArguments()) {
+            runDetectionAndReportFindings();
+        }
+    }
+
+    protected void runDetectionAndReportFindings() {
         Set<File> currentVersionFiles = SourceCodeFileGatherer.gatherDbRelatedFiles(currentVersionSourceCodeDir);
         Set<File> nextVersionFiles = SourceCodeFileGatherer.gatherDbRelatedFiles(nextVersionSourceCodeDir);
 
