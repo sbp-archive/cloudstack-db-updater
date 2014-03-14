@@ -18,6 +18,7 @@ public class FileSystemConflictDetector extends AbstractConflictDetector {
         detectors.add(new MissingFilesDetector(currentVersion, nextVersion, fileLists));
         detectors.add(new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion, fileLists));
         detectors.add(new ContentsChangedFilesDetector(currentVersion, nextVersion));
+        detectors.add(new NewFilesDetector(currentVersion, nextVersion, fileLists));
     }
 
     @Override

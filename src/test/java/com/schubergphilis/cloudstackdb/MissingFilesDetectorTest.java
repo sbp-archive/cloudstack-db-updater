@@ -12,17 +12,19 @@ import org.junit.Test;
 public class MissingFilesDetectorTest extends AbstractFileSystemConflictDetectorTest {
 
     private MissingFilesDetector detector;
+    private FileLists fileLists;
 
     @Override
     public void setup() throws Exception {
         super.setup();
 
-        detector = new MissingFilesDetector(currentVersion, nextVersion);
+        fileLists = new FileLists();
+        detector = new MissingFilesDetector(currentVersion, nextVersion, fileLists);
     }
 
     @Test
     public void testGetMissingFilesFilteringOutMovedFilesWhenAllFilesAreMissing() throws Exception {
-        List<SourceCodeFile> filteredMissingFiles = MissingFilesDetector.getMissingFilesFilteringOutMovedFiles(detector.missingFiles, detector.movedFiles);
+        List<SourceCodeFile> filteredMissingFiles = MissingFilesDetector.getMissingFilesFilteringOutMovedFiles(fileLists.getMissingFiles(), fileLists.getMovedFiles());
 
         assertNotNull(filteredMissingFiles);
         assertEquals(1, filteredMissingFiles.size());
@@ -44,7 +46,7 @@ public class MissingFilesDetectorTest extends AbstractFileSystemConflictDetector
 
     @Test
     public void testDetectAppliesGetMissingFilesFilteringOutMovedFiles() throws Exception {
-        List<SourceCodeFile> filteredMissingFiles = MissingFilesDetector.getMissingFilesFilteringOutMovedFiles(detector.missingFiles, detector.movedFiles);
+        List<SourceCodeFile> filteredMissingFiles = MissingFilesDetector.getMissingFilesFilteringOutMovedFiles(fileLists.getMissingFiles(), fileLists.getMovedFiles());
         List<Conflict> conflicts = detector.detect();
 
         assertNotNull(conflicts);

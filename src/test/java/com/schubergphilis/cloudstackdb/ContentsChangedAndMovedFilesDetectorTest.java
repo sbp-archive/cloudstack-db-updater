@@ -19,7 +19,7 @@ public class ContentsChangedAndMovedFilesDetectorTest extends AbstractFileSystem
 
     @Test
     public void testDetectWhenNoFileWasMoved() throws Exception {
-        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion);
+        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion, new FileLists());
 
         List<Conflict> conflicts = detector.detect();
 
@@ -37,7 +37,7 @@ public class ContentsChangedAndMovedFilesDetectorTest extends AbstractFileSystem
         FileUtils.writeToFile("bar", fileThatHasBeenMovedAndContentsHaveChanged);
         currentVersion.addFiles(Arrays.asList(new File[] {fileThatWillBeMovedAndContentsWillChange}));
         nextVersion.addFiles(Arrays.asList(new File[] {fileThatHasBeenMovedAndContentsHaveChanged}));
-        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion);
+        detector = new ContentsChangedAndMovedFilesDetector(currentVersion, nextVersion, new FileLists());
 
         List<Conflict> conflicts = detector.detect();
 
