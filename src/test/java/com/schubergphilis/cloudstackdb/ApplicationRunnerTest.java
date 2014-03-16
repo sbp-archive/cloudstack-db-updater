@@ -68,12 +68,12 @@ public class ApplicationRunnerTest {
     }
 
     @Test
-    public void testPrintFindings() throws Exception {
-        List<Conflict> conflicts = Arrays.asList(new Conflict[] {new ContentsChangedAndMovedFilesConflict(new ArrayList<ChangedSourceCodeFile>())});
-        String findings = ApplicationRunner.printFindings(conflicts);
-
-        assertNotNull(findings);
-        assertFalse(findings.isEmpty());
-    }
+        public void testPrintConflicts() throws Exception {
+            List<Conflict> conflicts = Arrays.asList(new Conflict[] {new ContentsChangedAndMovedFilesConflict(new ArrayList<ChangedSourceCodeFile>())});
+            String findings = ApplicationRunner.printConflicts(conflicts);
+    
+            assertNotNull(findings);
+            assertFalse(findings.isEmpty());
+        }
 
 }

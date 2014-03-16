@@ -20,8 +20,10 @@ package com.schubergphilis.cloudstackdb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -29,8 +31,11 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.schubergphilis.utils.FileUtils;
+
 public final class ApplicationRunner implements Runnable {
 
+    private static final String PATH_SEPARATOR = System.getProperty("path.separator");
     private static final String MANDATORY_OPTIONS = "-cv DIR -nv DIR";
     private static final String APPLICATION_NAME = "cs-db-updater.sh";
 
@@ -43,7 +48,7 @@ public final class ApplicationRunner implements Runnable {
     private File nextVersionSourceCodeDir;
 
     private List<String> args;
-    protected String findings;
+    protected String printedConflicts;
 
     protected ApplicationRunner(String[] args) {
         setArgs(args);
@@ -113,12 +118,30 @@ public final class ApplicationRunner implements Runnable {
         ConflictDetector detector = new FileSystemConflictDetector(currentVersion, nextVersion);
         List<Conflict> conflicts = detector.detect();
 
-        findings = printFindings(conflicts);
+        dumpPatchesToFile(conflicts);
 
-        log.info(findings);
+        printedConflicts = printConflicts(conflicts);
+        log.info(printedConflicts);
     }
 
-    protected static String printFindings(List<Conflict> conflicts) {
+    private static void dumpPatchesToFile(List<Conflict> conflicts) {
+        for (Conflict conflict : conflicts) {
+            Map<RelativePathFile, List<String>> patches;
+            try {
+                patches = conflict.getPatches();
+                for (RelativePathFile file : patches.keySet()) {
+                    File diffFile = new File(new File("diffs"), "diff-" + file.getRelativePath().replace(PATH_SEPARATOR, "_"));
+                    List<String> patch = patches.get(file);
+                    FileUtils.writeToFile(patch, diffFile);
+                    log.info("Wrote patch to " + diffFile.getPath());
+                }
+            } catch (IOException e) {
+                log.error("Couldn't get patches for " + conflict.getKind() + " conflict:\n" + conflict);
+            }
+        }
+    }
+
+    protected static String printConflicts(List<Conflict> conflicts) {
         StringBuilder sb = new StringBuilder();
         if (conflicts.isEmpty()) {
             sb.append("Found no potential conflicts between the two versions of ACS.\n");

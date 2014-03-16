@@ -18,9 +18,16 @@
  */
 package com.schubergphilis.cloudstackdb;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.schubergphilis.utils.ClassUtils;
+import com.schubergphilis.utils.FileUtils;
 
 public abstract class AbstractFileListConflict<T extends RelativePathFile & Comparable<T>> implements Conflict {
 
@@ -37,10 +44,32 @@ public abstract class AbstractFileListConflict<T extends RelativePathFile & Comp
 
     protected String print(String header) {
         StringBuilder sb = new StringBuilder(header);
+        sb.append(":\n");
         for (T file : files) {
             sb.append("\t- " + file.print() + "\n");
         }
         return sb.toString();
     }
 
+    protected static List<String> getPatch(File current, File next) throws IOException {
+        return FileUtils.getPatch(current, next);
+    }
+
+    protected static File getEmtpyFile() throws IOException {
+        return File.createTempFile("emptyFile-", Long.toString(System.currentTimeMillis()));
+    }
+
+    protected static Map<RelativePathFile, List<String>> getPatchesForChangedSourceCodeFiles(List<ChangedSourceCodeFile> changedFiles) throws IOException {
+        Map<RelativePathFile, List<String>> patches = new HashMap<RelativePathFile, List<String>>();
+        for (ChangedSourceCodeFile file : changedFiles) {
+            patches.put(file, getPatch(file.getOriginal().getFile(), file.getChanged().getFile()));
+        }
+
+        return patches;
+    }
+
+    @Override
+    public String toString() {
+        return ClassUtils.doToString(this);
+    }
 }

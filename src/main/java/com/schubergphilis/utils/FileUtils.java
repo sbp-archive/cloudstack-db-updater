@@ -28,6 +28,10 @@ import java.util.TreeSet;
 
 import org.hamcrest.Matcher;
 
+import difflib.Delta;
+import difflib.DiffUtils;
+import difflib.Patch;
+
 public class FileUtils {
 
     private FileUtils() {
@@ -95,6 +99,29 @@ public class FileUtils {
         }
 
         return gatheredFiles;
+    }
+
+    public static List<String> getPatch(File original, File revised) throws IOException {
+        List<String> originalLines = readLines(original);
+        List<String> revisedLines = readLines(revised);
+        Patch diff = DiffUtils.diff(originalLines, revisedLines);
+
+        List<Delta> deltas = diff.getDeltas();
+        List<String> patchDeltas = new ArrayList<>(deltas.size());
+        for (Delta delta : deltas) {
+            patchDeltas.add(delta.toString());
+        }
+
+        return patchDeltas;
+    }
+
+    public static void writeToFile(List<String> patch, File file) throws IOException {
+        FileWriter fileWriter = new FileWriter(file);
+        for (String delta : patch) {
+            fileWriter.write(delta);
+            fileWriter.write("\n");
+        }
+        fileWriter.close();
     }
 
 }

@@ -18,6 +18,7 @@
  */
 package com.schubergphilis.utils;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasProperty;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -57,6 +59,17 @@ public class FileUtilsTest {
     public void setup() throws Exception {
         file1 = FileUtils.createTemporaryFile(filename);
         file2 = FileUtils.createTemporaryFile(filename);
+    }
+
+    @Test
+    public void tetsWriteToFileMultipleLines() throws Exception {
+        List<String> lines = Arrays.asList(new String[] {"contents", "more contents"});
+        FileUtils.writeToFile(lines, file1);
+
+        List<String> expected = lines;
+        List<String> actual = FileUtils.readLines(file1);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -212,5 +225,80 @@ public class FileUtilsTest {
         FileUtils.copyDirectory(rootFolder.getRoot(), dstFolder.getRoot());
 
         assertEquals(3, dstFolder.getRoot().list().length);
+    }
+
+    @Test
+    public void testGetPatch() throws Exception {
+        FileUtils.writeToFile("foo", file1);
+        FileUtils.writeToFile("bar", file2);
+
+        List<String> patch = FileUtils.getPatch(file1, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+    }
+
+    @Test
+    public void testGetPatchWhenOriginalIsEmpty() throws Exception {
+        FileUtils.writeToFile("bar", file2);
+
+        List<String> patch = FileUtils.getPatch(file1, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetPatchWhenOriginalIsNull() throws Exception {
+        FileUtils.writeToFile("bar", file2);
+
+        List<String> patch = FileUtils.getPatch(null, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+    }
+
+    @Test
+    public void testGetPatchWhenRevisedIsEmpty() throws Exception {
+        FileUtils.writeToFile("foo", file1);
+
+        List<String> patch = FileUtils.getPatch(file1, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetPatchWhenRevisedIsNull() throws Exception {
+        FileUtils.writeToFile("foo", file1);
+
+        List<String> patch = FileUtils.getPatch(file1, null);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+    }
+
+    @Test
+    public void testGetPatchWhenLinesAreAdded() throws Exception {
+        FileUtils.writeToFile("foo", file1);
+        FileUtils.writeToFile("foo\nbar", file2);
+
+        List<String> patch = FileUtils.getPatch(file1, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+        assertThat(patch.get(0), allOf(containsString("Insert"), containsString("bar")));
+    }
+
+    @Test
+    public void testGetPatchWhenLinesAreRemoved() throws Exception {
+        FileUtils.writeToFile("foo\nbar", file1);
+        FileUtils.writeToFile("bar", file2);
+
+        List<String> patch = FileUtils.getPatch(file1, file2);
+
+        assertNotNull(patch);
+        assertEquals(1, patch.size());
+        assertThat(patch.get(0), allOf(containsString("Delete"), containsString("foo")));
     }
 }

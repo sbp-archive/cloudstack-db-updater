@@ -39,13 +39,13 @@ public abstract class AbstractFileSystemConflictDetectorTest {
     protected final String nameOfFileThatWillBeMissing = "fileThatWillBeMissing";
     protected final String nameOfFileThatWillBeMoved = "fileThatWillBeMoved";
     protected File fileCurrentVersion;
-    protected File fileNewVersion;
+    protected File fileNextVersion;
     protected String newDir = "newDir";
 
     @Before
     public void setup() throws Exception {
         fileCurrentVersion = rootFolderCurrentVersion.newFile(filename);
-        fileNewVersion = rootFolderNewVersion.newFile(filename);
+        fileNextVersion = rootFolderNewVersion.newFile(filename);
         File fileThatWillBeMissing = rootFolderCurrentVersion.newFile(nameOfFileThatWillBeMissing);
         File fileThatWillBeMoved = rootFolderCurrentVersion.newFile(nameOfFileThatWillBeMoved);
 
@@ -56,7 +56,7 @@ public abstract class AbstractFileSystemConflictDetectorTest {
         nextVersion = new SourceCodeVersion(rootFolderNewVersion.getRoot());
 
         currentVersion.addFiles(Arrays.asList(new File[] {fileCurrentVersion, fileThatWillBeMissing, fileThatWillBeMoved}));
-        nextVersion.addFiles(Arrays.asList(new File[] {fileNewVersion, fileThatHasBeenMoved}));
+        nextVersion.addFiles(Arrays.asList(new File[] {fileNextVersion, fileThatHasBeenMoved}));
     }
 
 }

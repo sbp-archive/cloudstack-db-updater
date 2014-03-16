@@ -18,6 +18,14 @@
  */
 package com.schubergphilis.cloudstackdb;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 public interface Conflict extends Printable {
+
+    public Map<RelativePathFile, List<String>> getPatches() throws IOException;
+
+    public String getKind();
 
 }

@@ -18,9 +18,13 @@
  */
 package com.schubergphilis.cloudstackdb;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ContentsChangedAndMovedFilesConflict extends AbstractFileListConflict<ChangedSourceCodeFile> {
+
+    private static final String KIND = "Moved files in which contents have changed";
 
     public ContentsChangedAndMovedFilesConflict(List<ChangedSourceCodeFile> movedFiles) {
         super(movedFiles);
@@ -28,6 +32,17 @@ public class ContentsChangedAndMovedFilesConflict extends AbstractFileListConfli
 
     @Override
     public String print() {
-        return print("Moved files in which contents have changed:\n");
+        return print(KIND);
     }
+
+    @Override
+    public Map<RelativePathFile, List<String>> getPatches() throws IOException {
+        return getPatchesForChangedSourceCodeFiles(files);
+    }
+
+    @Override
+    public String getKind() {
+        return KIND;
+    }
+
 }

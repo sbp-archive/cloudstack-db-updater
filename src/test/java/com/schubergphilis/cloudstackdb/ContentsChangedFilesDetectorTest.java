@@ -36,7 +36,7 @@ public class ContentsChangedFilesDetectorTest extends AbstractFileSystemConflict
     @Test
     public void testCheckForChangesInFileContentsWhenNoFileHasChanged() throws Exception {
         FileUtils.writeToFile("foo", fileCurrentVersion);
-        FileUtils.writeToFile("foo", fileNewVersion);
+        FileUtils.writeToFile("foo", fileNextVersion);
 
         List<Conflict> conflicts = ContentsChangedFilesDetector.checkForChangesInFileContents(currentVersion, nextVersion);
 
@@ -47,7 +47,7 @@ public class ContentsChangedFilesDetectorTest extends AbstractFileSystemConflict
     @Test
     public void testCheckForChangesInFileContentsWhenOneFileHasChanged() throws Exception {
         FileUtils.writeToFile("foo", fileCurrentVersion);
-        FileUtils.writeToFile("bar", fileNewVersion);
+        FileUtils.writeToFile("bar", fileNextVersion);
         String otherFilename = "otherFile";
         File otherFileCurrentVersion = rootFolderCurrentVersion.newFile(otherFilename);
         File otherFileNewVersion = rootFolderNewVersion.newFile(otherFilename);
@@ -76,7 +76,7 @@ public class ContentsChangedFilesDetectorTest extends AbstractFileSystemConflict
     @Test
     public void testGetFilesThatChangedInNewVersionWhenOneFileChanged() throws Exception {
         FileUtils.writeToFile("foo", fileCurrentVersion);
-        FileUtils.writeToFile("bar", fileNewVersion);
+        FileUtils.writeToFile("bar", fileNextVersion);
 
         List<ChangedSourceCodeFile> expected = Arrays.asList(new ChangedSourceCodeFile[] {new ContentsChangedSourceCodeFile("/" + filename, "/" + filename)});
         List<ChangedSourceCodeFile> actual = ContentsChangedFilesDetector.getFilesThatChangedInNewVersion(currentVersion, nextVersion);

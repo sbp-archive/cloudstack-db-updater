@@ -18,9 +18,14 @@
  */
 package com.schubergphilis.cloudstackdb;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MissingFilesConflict extends AbstractFileListConflict<SourceCodeFile> {
+
+    private static final String KIND = "Missing files";
 
     public MissingFilesConflict(List<SourceCodeFile> missingFiles) {
         super(missingFiles);
@@ -28,6 +33,22 @@ public class MissingFilesConflict extends AbstractFileListConflict<SourceCodeFil
 
     @Override
     public String print() {
-        return print("Missing files:\n");
+        return print(KIND);
     }
+
+    @Override
+    public Map<RelativePathFile, List<String>> getPatches() throws IOException {
+        Map<RelativePathFile, List<String>> patches = new HashMap<RelativePathFile, List<String>>();
+        for (SourceCodeFile file : files) {
+            patches.put(file, getPatch(file.getFile(), getEmtpyFile()));
+        }
+
+        return patches;
+    }
+
+    @Override
+    public String getKind() {
+        return KIND;
+    }
+
 }
