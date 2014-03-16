@@ -237,6 +237,7 @@
             <exclude>**/README</exclude>
             <exclude>src/test/resources/**</exclude>
             <exclude>src/main/resources/**</exclude>
+            <exclude>**.log</exclude>
           </excludes>
         </configuration>
         <executions>
