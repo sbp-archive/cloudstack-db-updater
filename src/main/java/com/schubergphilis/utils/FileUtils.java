@@ -37,6 +37,27 @@ public class FileUtils {
     private FileUtils() {
     }
 
+    public static void deleteDirectory(File dir, boolean recursively) throws IOException {
+        if (!dir.exists() || !dir.isDirectory()) {
+            throw new IOException("Supplied directory '" + dir.getPath() + "' is either a file or it does not exist.");
+        }
+        if (!recursively) {
+            if (!dir.delete()) {
+                throw new IOException("Couldnot delte directory '" + dir.getPath() + "' probably because it is not empty.");
+            }
+        } else {
+            org.apache.commons.io.FileUtils.deleteDirectory(dir);
+        }
+    }
+
+    public static String replaceFileSeparator(String path, String fileSeparatorRegex, String replacement) {
+        return path.replaceAll(fileSeparatorRegex, replacement);
+    }
+
+    public static String replaceFileSeparator(String path, String replacement) {
+        return replaceFileSeparator(path, System.getProperty("file.separator"), replacement);
+    }
+
     public static void copyDirectory(File srcDir, File dstDir) throws IOException {
         org.apache.commons.io.FileUtils.copyDirectory(srcDir, dstDir);
     }
@@ -88,7 +109,7 @@ public class FileUtils {
     }
 
     public static Set<File> gatherFilesThatMatchCriteria(File baseDir, Matcher<String> criteria) {
-        Set<File> gatheredFiles = new TreeSet<>(new FileComparator());
+        Set<File> gatheredFiles = new TreeSet<>(new AbsolutePathFileComparator());
 
         for (File file : baseDir.listFiles()) {
             if (file.isDirectory()) {

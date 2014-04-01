@@ -49,7 +49,7 @@ public class ClassUtilsTest {
 
     @Test
     public void testToString() throws Exception {
-        assertThat(ClassUtils.doToString(new Integer(1)), containsString("[value=1]"));
+        assertThat(ClassUtils.doToString(new Integer(1)), containsString("value=1"));
     }
 
 }

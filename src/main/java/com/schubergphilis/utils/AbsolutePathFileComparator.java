@@ -21,7 +21,7 @@ package com.schubergphilis.utils;
 import java.io.File;
 import java.util.Comparator;
 
-public class FileComparator implements Comparator<File> {
+public class AbsolutePathFileComparator implements Comparator<File> {
 
     @Override
     public int compare(File o1, File o2) {

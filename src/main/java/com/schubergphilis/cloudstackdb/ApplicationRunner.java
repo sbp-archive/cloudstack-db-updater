@@ -35,7 +35,6 @@ import com.schubergphilis.utils.FileUtils;
 
 public final class ApplicationRunner implements Runnable {
 
-    private static final String PATH_SEPARATOR = System.getProperty("path.separator");
     private static final String MANDATORY_OPTIONS = "-cv DIR -nv DIR";
     private static final String APPLICATION_NAME = "cs-db-updater.sh";
 
@@ -125,20 +124,40 @@ public final class ApplicationRunner implements Runnable {
     }
 
     private static void dumpPatchesToFile(List<Conflict> conflicts) {
+        File diffsDir;
+        try {
+            diffsDir = createDiffsDir();
+        } catch (IOException e) {
+            log.error("Unable to create directory to write patch files to.", e);
+            return;
+        }
+        dumpPatchesToFile(diffsDir, conflicts);
+    }
+
+    protected static void dumpPatchesToFile(File diffsDir, List<Conflict> conflicts) {
         for (Conflict conflict : conflicts) {
             Map<RelativePathFile, List<String>> patches;
             try {
                 patches = conflict.getPatches();
                 for (RelativePathFile file : patches.keySet()) {
-                    File diffFile = new File(new File("diffs"), "diff-" + file.getRelativePath().replace(PATH_SEPARATOR, "_"));
+                    File diffFile = new File(diffsDir, "diff-" + FileUtils.replaceFileSeparator(file.getRelativePath(), "___"));
                     List<String> patch = patches.get(file);
                     FileUtils.writeToFile(patch, diffFile);
                     log.info("Wrote patch to " + diffFile.getPath());
                 }
             } catch (IOException e) {
-                log.error("Couldn't get patches for " + conflict.getKind() + " conflict:\n" + conflict);
+                log.error("Couldn't get patches for " + conflict.getKind() + " conflict:\n\n" + conflict + "\n\n", e);
             }
         }
+    }
+
+    protected static File createDiffsDir() throws IOException {
+        File diffsDir = new File("diffs");
+        if (diffsDir.exists()) {
+            FileUtils.deleteDirectory(diffsDir, true);
+        }
+        diffsDir.mkdir();
+        return diffsDir;
     }
 
     protected static String printConflicts(List<Conflict> conflicts) {

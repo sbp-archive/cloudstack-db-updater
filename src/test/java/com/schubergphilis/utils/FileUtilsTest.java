@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -301,4 +302,109 @@ public class FileUtilsTest {
         assertEquals(1, patch.size());
         assertThat(patch.get(0), allOf(containsString("Delete"), containsString("foo")));
     }
+
+    @Test
+    public void testReplaceFileSeparatorWhenPathIsEmpty() throws Exception {
+        String expected = "";
+        String actual = FileUtils.replaceFileSeparator("", "/", "_");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReplaceFileSeparatorWhenPathHasNoSeparator() throws Exception {
+        String path = "path";
+
+        String expected = path;
+        String actual = FileUtils.replaceFileSeparator(path, "/", "_");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReplaceFileSeparatorWhenPathHasSeparator() throws Exception {
+        String path = "path/path/path";
+
+        String expected = "path_path_path";
+        String actual = FileUtils.replaceFileSeparator(path, "/", "_");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReplaceFileSeparatorWhenSeparatorIsEmpty() throws Exception {
+        String path = "path/path/path";
+
+        String expected = "_p_a_t_h_/_p_a_t_h_/_p_a_t_h_";
+        String actual = FileUtils.replaceFileSeparator(path, "", "_");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReplaceFileSeparatorWhenReplacementIsEmpty() throws Exception {
+        String path = "path/path/path";
+
+        String expected = "pathpathpath";
+        String actual = FileUtils.replaceFileSeparator(path, "/", "");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IOException.class)
+    public void testDeleteDirectoryNotRecursivelyWhenDirDoesNotExist() throws Exception {
+        FileUtils.deleteDirectory(new File("non existent"), false);
+    }
+
+    @Test(expected = IOException.class)
+    public void testDeleteDirectoryNotRecursivelyWhenDirIsFile() throws Exception {
+        FileUtils.deleteDirectory(file1, false);
+    }
+
+    @Test(expected = IOException.class)
+    public void testDeleteDirectoryRecursivelyWhenDirDoesNotExist() throws Exception {
+        FileUtils.deleteDirectory(new File("non existent"), true);
+    }
+
+    @Test(expected = IOException.class)
+    public void testDeleteDirectoryRecursivelyWhenDirIsFile() throws Exception {
+        FileUtils.deleteDirectory(file1, true);
+    }
+
+    @Test
+    public void testDeleteDirectoryNotRecursivelyWhenDirIsEmpty() throws Exception {
+        File dir = rootFolder.newFolder("dir");
+
+        FileUtils.deleteDirectory(dir, false);
+
+        assertFalse(dir.exists());
+    }
+
+    @Test(expected = IOException.class)
+    public void testDeleteDirectoryNotRecursivelyWhenDirIsNotEmpty() throws Exception {
+        File dir = rootFolder.newFolder("dir");
+        new File(dir, "file").createNewFile();
+
+        FileUtils.deleteDirectory(dir, false);
+    }
+
+    @Test
+    public void testDeleteDirectoryRecursivelyWhenDirIsEmpty() throws Exception {
+        File dir = rootFolder.newFolder("dir");
+
+        FileUtils.deleteDirectory(dir, true);
+
+        assertFalse(dir.exists());
+    }
+
+    @Test
+    public void testDeleteDirectoryRecursivelyWhenDirIsNotEmpty() throws Exception {
+        File dir = rootFolder.newFolder("dir");
+        new File(dir, "file").createNewFile();
+
+        FileUtils.deleteDirectory(dir, true);
+
+        assertFalse(dir.exists());
+    }
+
 }

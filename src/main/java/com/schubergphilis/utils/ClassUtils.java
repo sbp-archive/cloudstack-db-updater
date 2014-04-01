@@ -21,6 +21,7 @@ package com.schubergphilis.utils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ClassUtils {
 
@@ -36,7 +37,7 @@ public class ClassUtils {
     }
 
     public static String doToString(Object object) {
-        return ToStringBuilder.reflectionToString(object);
+        return ToStringBuilder.reflectionToString(object, ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }
