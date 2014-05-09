@@ -115,6 +115,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.schubergphilis</groupId>
+      <artifactId>utils</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
